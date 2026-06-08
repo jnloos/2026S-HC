@@ -1,0 +1,15 @@
+id: personal:llm
+name: Large Language Model (LLM)
+description: "Large Language Model (LLM) Brick enables seamless integration with locally hosted LLMs for advanced AI capabilities in your Arduino projects."
+requires_services: ["arduino:genie", "arduino:llamacpp"]
+requires_model: true
+# Dieses Board ist ein `unoq` (kein NPU) — der offizielle genie-Stack ist
+# ventunoq-only. Daher On-Device-LLM via llama.cpp-Sidecar
+# (Container `llamacpp-models-runner:9999`, gestartet ausserhalb von App Lab).
+# Siehe report/notes/04-on-device-llm-issue.md. Alias muss zur --alias-Angabe
+# des llama.cpp-Servers passen.
+model: llamacpp:qwen0.5b
+supported_boards: ["unoq", "ventunoq"]
+ai_frameworks_compatibility:
+  - genie
+  - llamacpp

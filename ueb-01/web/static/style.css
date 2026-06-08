@@ -1,0 +1,429 @@
+/* DigSig Debug UI — pixel-matched to swagger-ui-dist v5 served at /docs.
+   Computed values for the title, opblocks, tag headings, method pills, and
+   spacing were measured against the live /docs page and reproduced here.
+   No web fonts — Swagger UI uses the browser-default `sans-serif`. */
+
+:root {
+  /* Method palette (Swagger v5) */
+  --get:    #61affe;
+  --post:   #49cc90;
+  --put:    #fca130;
+  --delete: #f93e3e;
+  --pending: #707380;
+
+  /* Status palette */
+  --status-2xx: #49cc90;
+  --status-4xx: #fca130;
+  --status-5xx: #f93e3e;
+  --status-other: #707380;
+
+  /* DigSig variant palette */
+  --variant-v1: #4d8acc;
+  --variant-v2: #8e44ad;
+  --variant-v3: #d35400;
+
+  /* Swagger surface */
+  --text:         #3b4151;
+  --text-muted:   rgba(59, 65, 81, 0.65);
+  --rule:         rgba(59, 65, 81, 0.30);
+  --rule-soft:    rgba(59, 65, 81, 0.10);
+  --bg-white:     #ffffff;
+  --bg-code-dark: #41444e;
+  --bg-code-soft: #f7f7f7;
+  --swagger-green: #89bf04;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-white);
+}
+
+body {
+  font-family: sans-serif;          /* exact match: Swagger UI scopes to sans-serif */
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code, pre, .mono { font-family: monospace; }
+
+/* ----------------------------------------------------------------------
+   Wrapper / Info block — mirrors .swagger-ui .wrapper + .info
+   ---------------------------------------------------------------------- */
+
+.wrapper {
+  padding: 0 20px;
+  max-width: 1460px;
+  margin: 0 auto;
+}
+
+.info {
+  margin: 50px 0;
+}
+
+.main { margin: 0; }
+
+.title {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+/* The two pills next to the title mirror Swagger's <small class="version-stamp">
+   and the inline version <pre>. Compact (10–12px), oblong, sit at the top of
+   the large title text. */
+.title small {
+  position: relative;
+  top: -8px;
+  display: inline-block;
+  margin: 0 0 0 5px;
+  padding: 2px 4px;
+  border-radius: 57px;
+  font-size: 10px;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.title small.version-pill {
+  background: #7d8492;
+  color: #fff;
+}
+.title small.version-pill pre {
+  margin: 0;
+  padding: 2px 8px;
+  border-radius: 47px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #fff;
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+/* Live status — styled like Swagger's green OAS stamp; flips colors when live. */
+.title small.version-stamp {
+  background: var(--text-muted);
+  color: #fff;
+  padding: 4px 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 10px;
+  transition: background 0.2s;
+}
+.title small.version-stamp .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+.title small.version-stamp.live {
+  background: var(--swagger-green);
+}
+.title small.version-stamp.live .dot {
+  background: #fff;
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+  animation: pulse 1.6s ease-out infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.65); }
+  70%  { box-shadow: 0 0 0 6px rgba(255, 255, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+}
+
+.description {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: var(--text);
+  max-width: 900px;
+}
+.description code.inline {
+  background: var(--rule-soft);
+  color: var(--text);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12.5px;
+}
+
+/* ----------------------------------------------------------------------
+   Tag section — mirrors .opblock-tag
+   ---------------------------------------------------------------------- */
+
+.opblock-tag-section { margin: 0; }
+
+.opblock-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 20px 10px 10px;
+  margin: 0 0 5px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: default;
+}
+.opblock-tag small {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text);
+  padding: 0 10px;
+}
+
+.empty {
+  margin: 16px 10px 0;
+  padding: 28px;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  background: var(--bg-code-soft);
+  border: 1px dashed var(--rule);
+  border-radius: 4px;
+}
+.empty.hidden { display: none; }
+
+/* ----------------------------------------------------------------------
+   Opblock card — exact metrics from /docs computed styles
+   ---------------------------------------------------------------------- */
+
+.card {
+  margin: 0 0 15px;
+  border-radius: 4px;
+  border: 1px solid var(--pending);
+  background: rgba(112, 115, 128, 0.10);
+  transition: box-shadow 0.18s ease;
+}
+.card.method-get    { background: rgba(97, 175, 254, 0.10); border-color: var(--get); }
+.card.method-post   { background: rgba(73, 204, 144, 0.10); border-color: var(--post); }
+.card.method-put    { background: rgba(252, 161, 48, 0.10); border-color: var(--put); }
+.card.method-delete { background: rgba(249,  62, 62, 0.10); border-color: var(--delete); }
+
+@keyframes opblock-flash {
+  0%   { background: rgba(73, 204, 144, 0.30); }
+  100% {}
+}
+.card.new { animation: opblock-flash 1s ease-out; }
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Method pill — Swagger metrics: 80×28, font 14/700, padding 6 0, line-height 16, radius 3 */
+.pill {
+  display: inline-block;
+  min-width: 80px;
+  padding: 6px 0;
+  border-radius: 3px;
+  text-align: center;
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 16px;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.10);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+}
+.pill.GET     { background: var(--get); }
+.pill.POST    { background: var(--post); }
+.pill.PUT     { background: var(--put); }
+.pill.DELETE  { background: var(--delete); }
+.pill.PENDING { background: var(--pending); }
+
+.path {
+  flex: 1;
+  font-family: monospace;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text);
+  word-break: break-all;
+  padding: 0 10px;
+}
+
+.variant-tag {
+  font-family: sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  padding: 3px 9px;
+  border-radius: 11px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.variant-tag.v1 { background: var(--variant-v1); }
+.variant-tag.v2 { background: var(--variant-v2); }
+.variant-tag.v3 { background: var(--variant-v3); }
+
+.status-badge {
+  font-family: monospace;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 9px;
+  border-radius: 3px;
+  background: var(--status-other);
+  color: #fff;
+  min-width: 40px;
+  text-align: center;
+}
+.status-badge.s2xx { background: var(--status-2xx); }
+.status-badge.s4xx { background: var(--status-4xx); }
+.status-badge.s5xx { background: var(--status-5xx); }
+
+.duration {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 64px;
+  text-align: right;
+}
+
+.caret {
+  color: var(--text-muted);
+  font-size: 11px;
+  width: 18px;
+  text-align: center;
+  transition: transform 0.18s ease;
+}
+.card.open .caret { transform: rotate(90deg); }
+
+/* ----------------------------------------------------------------------
+   Opblock body — white panel, sectioned content
+   ---------------------------------------------------------------------- */
+
+.card-body {
+  display: none;
+  background: var(--bg-white);
+  border-top: 1px solid var(--rule-soft);
+  padding: 20px;
+}
+.card.open .card-body { display: block; }
+
+.section { margin: 0 0 18px; }
+.section:last-child { margin-bottom: 0; }
+.section-title {
+  font-family: sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--rule-soft);
+}
+.meta .request-id {
+  font-family: monospace;
+  background: var(--rule-soft);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--text);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 6px 16px;
+  margin: 0;
+  font-size: 13px;
+  padding: 10px 12px;
+  background: var(--bg-code-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
+}
+.kv dt {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-family: sans-serif;
+  letter-spacing: 0.3px;
+}
+.kv dd {
+  margin: 0;
+  font-family: monospace;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.code {
+  background: var(--bg-code-soft);
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
+  padding: 12px 14px;
+  font-family: monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 360px;
+  overflow: auto;
+  color: var(--text);
+}
+.code.dark {
+  background: var(--bg-code-dark);
+  border-color: var(--bg-code-dark);
+  color: #fff;
+}
+.code.dark::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.25); }
+
+.error {
+  background: rgba(249, 62, 62, 0.08);
+  border: 1px solid rgba(249, 62, 62, 0.45);
+  color: #a23030;
+  padding: 11px 13px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.selection-block {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  background: var(--bg-code-soft);
+  border: 1px solid var(--rule-soft);
+  border-left: 4px solid var(--variant-v2);
+  border-radius: 3px;
+}
+.selection-block.v1 { border-left-color: var(--variant-v1); }
+.selection-block.v3 { border-left-color: var(--variant-v3); }
+.selection-block-title {
+  font-family: sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+/* ----------------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------------- */
+
+@media (max-width: 720px) {
+  .title { font-size: 28px; }
+  .path { font-size: 14px; padding: 0 6px; }
+  .pill { min-width: 64px; font-size: 13px; }
+  .duration { min-width: 50px; }
+  .kv { grid-template-columns: 1fr; }
+  .kv dt { padding-top: 4px; }
+}

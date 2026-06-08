@@ -1,0 +1,4 @@
+# Board-CLI-Skripte — lokale Konfiguration
+
+# Lokale Env-Datei nicht einchecken (Vorlage env.xmpl wird eingecheckt).
+.env

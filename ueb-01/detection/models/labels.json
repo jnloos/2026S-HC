@@ -1,0 +1,48 @@
+{
+  "input_size": 112,
+  "mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "color_order": "RGB",
+  "age_bands": [
+    "child",
+    "teen",
+    "young-adult",
+    "adult",
+    "senior"
+  ],
+  "genders": [
+    "male",
+    "female"
+  ],
+  "onnx_input": "input",
+  "onnx_outputs": {
+    "age": "age_logits",
+    "gender": "gender_logits"
+  },
+  "child_band": "child",
+  "thresholds": {
+    "face_score": 0.6
+  },
+  "target_group_rules": {
+    "child_any": "families_with_children",
+    "dominant": {
+      "teen|male": "teens",
+      "teen|female": "teens",
+      "young-adult|female": "young_women",
+      "young-adult|male": "young_men",
+      "adult|female": "adult_women",
+      "adult|male": "adult_men",
+      "senior|male": "seniors",
+      "senior|female": "seniors"
+    },
+    "default": "adults_mixed"
+  }
+}

@@ -1,0 +1,27 @@
+# FastAPI service — Python
+
+# Bytecode / caches
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Packaging / editable install
+*.egg-info/
+build/
+dist/
+
+# Local env
+.env
+!.env.xmpl
+
+# SQLite sidecar files (DB itself lives under storage/, ignored below)
+*.db
+*.db-wal
+*.db-shm
+
+# Runtime storage (DB + uploaded files): keep the folder, ignore contents
+storage/*
+!storage/.gitkeep

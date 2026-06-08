@@ -1,0 +1,17 @@
+# Training/export environment for the on-device audience classifier (CPU only).
+# Managed with uv + Python 3.12:
+#   uv venv --python 3.12 .venv
+#   uv pip install --python .venv/bin/python torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   uv pip install --python .venv/bin/python -r requirements.txt
+#
+# torch/torchvision come from the CPU index (line above), NOT this file, to avoid
+# pulling CUDA wheels on a machine with no NVIDIA GPU.
+datasets
+huggingface_hub
+onnx
+onnxruntime
+opencv-contrib-python
+numpy
+pillow
+scikit-learn
+tqdm

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DigSig API — Debug UI</title>
+  <link rel="shortcut icon" href="https://fastapi.tiangolo.com/img/favicon.png" />
+  <link rel="stylesheet" href="/debug/static/style.css" />
+</head>
+<body>
+  <div class="wrapper">
+    <section class="info">
+      <hgroup class="main">
+        <h2 class="title">
+          DigSig API — Debug
+          <small class="version-pill" id="version-pill"><pre>v0.1.0</pre></small>
+          <small class="version-stamp" id="status" role="status" aria-live="polite">
+            <span class="dot" id="status-dot" aria-hidden="true"></span>
+            <span id="status-text">connecting</span>
+          </small>
+        </h2>
+        <p class="description">
+          Server-Sent Events from the request &amp; selection pipeline. Grouped
+          by <code class="inline">request_id</code>, newest on top.
+        </p>
+      </hgroup>
+    </section>
+
+    <section class="opblock-tag-section">
+      <h3 class="opblock-tag">
+        <span>events</span>
+        <small>request &amp; selection stream</small>
+      </h3>
+
+      <div class="empty" id="empty-state">
+        Waiting for events. Hit the API to see requests appear here.
+      </div>
+      <div id="events"></div>
+    </section>
+  </div>
+
+  <script src="/debug/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+%% ARDU-DigSig-Prototype — Strategy-slot pipeline (one cycle)
+%% main.py is the composition root: it picks ONE implementation per slot
+%% (env-driven) and wires them into Pipeline. A context dict flows through;
+%% errors at any stage degrade via the sink instead of going silent.
+flowchart TB
+    subgraph ROOT["main.py — composition root (wires one impl per slot from env)"]
+        direction LR
+        CFG["config.py Settings<br/>TRIGGER_MODE · SELECTOR_MODE<br/>AUDIENCE_MODE · POOL_ID · CMS_URL"]
+    end
+
+    subgraph TRIG["Slot: triggers/"]
+        T1["TimerTrigger<br/>(every N s)"]
+        T2["PersonTrigger<br/>(video_object_detection,<br/>debounced)"]
+    end
+
+    subgraph AUD["Slot: audience/"]
+        A1["StaticAudienceClassifier<br/>(fixed AUDIENCE_GROUP)"]
+        A2["FaceAudienceClassifier<br/>(camera -> in-process ONNX)<br/>never raises"]
+    end
+
+    subgraph SEL["Slot: pickers/ (the 3 variants)"]
+        S1["EdgeSelector (V1)<br/>on-device LLM"]
+        S2["HybridSelector (V2)<br/>cloud pick by context"]
+        S3["CloudSelector (V3)<br/>cloud pick by image"]
+    end
+
+    subgraph SNK["Slot: sinks/"]
+        K1["WebUISink<br/>content_update -> browser<br/>publish_error on failure"]
+    end
+
+    CFG -. selects .-> TRIG
+    CFG -. selects .-> AUD
+    CFG -. selects .-> SEL
+    CFG -. selects .-> SNK
+
+    T1 & T2 -->|"on_fire(initial_ctx)<br/>{type, reason, ts}"| P0
+
+    subgraph PIPE["Pipeline.run_once(initial_ctx) — never raises"]
+        direction TB
+        P0(["start cycle"]) --> P1["classify()"]
+        P1 -->|"context = {...initial,<br/>audience}"| P2["select(context)"]
+        P2 -->|"result {id,name,html,<br/>reasoning,variant}"| P3["publish(result, context)"]
+    end
+
+    P1 --- AUD
+    P2 --- SEL
+    P3 --- SNK
+
+    P1 -.->|exception| ERR["sink.publish_error(...)<br/>UI shows degraded state"]
+    P2 -.->|exception| ERR
+    P3 -.->|exception| ERRLOG["log only<br/>(sink itself broken)"]
+
+    BUS["DebugBus (if DEBUG)<br/>run_started / stage dur_ms / run_done"]
+    PIPE -. emits .-> BUS
+
+    classDef slot fill:#eef2ff,stroke:#4338ca;
+    classDef pipe fill:#ecfeff,stroke:#0e7490;
+    classDef err fill:#fff5f5,stroke:#c53030;
+    class T1,T2,A1,A2,S1,S2,S3,K1 slot;
+    class P0,P1,P2,P3 pipe;
+    class ERR,ERRLOG err;

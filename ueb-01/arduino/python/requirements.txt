@@ -1,0 +1,15 @@
+# Extra Python wheels the App's own code needs beyond what the declared bricks
+# provide. App Lab installs brick dependencies automatically; these cover the
+# in-process audience-inference pipeline (audience/inference.py).
+#
+# If a board's App environment already ships these (e.g. via the
+# video_object_detection brick), installing them again is a no-op. If they are
+# absent, AUDIENCE_MODE=face degrades cleanly to the static classifier — see
+# _make_audience_pipeline() in main.py — until they are installed on the board:
+#   ssh "$BOARD" 'pip install --user onnxruntime opencv-python-headless numpy'
+#
+# cv2.FaceDetectorYN lives in opencv's main objdetect module since 4.5.4, so the
+# lighter -headless build (no contrib, no GUI libs) is enough.
+onnxruntime>=1.17
+opencv-python-headless>=4.5.4
+numpy>=1.26

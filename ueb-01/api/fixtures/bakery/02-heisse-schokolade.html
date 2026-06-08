@@ -1,0 +1,75 @@
+<style>
+  .bk-card-2 {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(160deg, #5b1f1a 0%, #9c3a2a 55%, #d97a3e 100%);
+    color: #fff5e8;
+    padding: 72px 56px;
+    border-radius: 28px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .bk-card-2 .bk2-icon-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .bk-card-2 .bk2-icon {
+    font-size: 140px;
+    line-height: 1;
+    display: inline-block;
+  }
+  .bk-card-2 .bk2-steam {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    width: 14px;
+    height: 60px;
+    margin-left: -7px;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.7), transparent 70%);
+    border-radius: 50%;
+    filter: blur(6px);
+    opacity: 0;
+    animation: bk2-steam 3s ease-out infinite;
+  }
+  .bk-card-2 .bk2-steam.s2 { left: 40%; animation-delay: 1s; }
+  .bk-card-2 .bk2-steam.s3 { left: 60%; animation-delay: 2s; }
+  @keyframes bk2-steam {
+    0%   { transform: translateY(0)   scale(0.6); opacity: 0; }
+    30%  { opacity: 0.8; }
+    100% { transform: translateY(-80px) scale(1.6); opacity: 0; }
+  }
+  .bk-card-2 h1 {
+    font-size: 64px;
+    margin: 24px 0 8px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+  }
+  .bk-card-2 .bk2-sub {
+    font-size: 26px;
+    opacity: 0.9;
+    margin: 0 0 32px;
+  }
+  .bk-card-2 .bk2-price {
+    display: inline-block;
+    background: #ffd6a8;
+    color: #5b1f1a;
+    font-size: 56px;
+    font-weight: 900;
+    padding: 16px 36px;
+    border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+</style>
+<div class="bk-card-2">
+  <div class="bk2-icon-wrap">
+    <span class="bk2-steam"></span>
+    <span class="bk2-steam s2"></span>
+    <span class="bk2-steam s3"></span>
+    <span class="bk2-icon">☕🥧</span>
+  </div>
+  <h1>Gemütliche Auszeit</h1>
+  <p class="bk2-sub">Heiße Schokolade & hausgemachter Apfelstrudel</p>
+  <div class="bk2-price">5,50&nbsp;€</div>
+</div>

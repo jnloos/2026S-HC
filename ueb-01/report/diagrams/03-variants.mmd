@@ -1,0 +1,51 @@
+%% ARDU-DigSig-Prototype — The three variants: where selection happens,
+%% what data leaves the board, and who decides.
+flowchart TB
+    CAM["Camera frame<br/>(on board)"]
+    CTX["context dict<br/>(audience, weather, ...)"]
+
+    subgraph V1["V1 — edge-only (SELECTOR_MODE=edge)"]
+        direction TB
+        V1A["EdgeSelector.select(context)"]
+        V1B["CMSClient.get_pool()<br/>GET /pools/{id}<br/>(pool cached)"]
+        V1C["personal:llm brick<br/>-> llamacpp-runner:9999<br/>picks id locally"]
+        V1A --> V1B --> V1C
+        V1NOTE["DECIDES: on board<br/>LEAVES BOARD: nothing<br/>(only fetches the pool)"]
+    end
+
+    subgraph V2["V2 — hybrid (SELECTOR_MODE=hybrid)"]
+        direction TB
+        V2A["HybridSelector.select(context)"]
+        V2B["CMSClient.choose_by_context()<br/>POST /pools/{id}/choose-by-context<br/>(open JSON body)"]
+        V2C["api selection.choose_by_context<br/>-> Claude (text) picks id"]
+        V2A --> V2B --> V2C
+        V2NOTE["DECIDES: cloud (Claude)<br/>LEAVES BOARD: context only<br/>(image stays local)"]
+    end
+
+    subgraph V3["V3 — cloud-only (SELECTOR_MODE=cloud)"]
+        direction TB
+        V3A["CloudSelector.select(context)<br/>frame_provider -> JPEG"]
+        V3B["CMSClient.choose_by_img()<br/>POST /pools/{id}/choose-by-img<br/>(multipart image + context)"]
+        V3C["api selection.choose_by_image<br/>-> Claude VISION sees scene<br/>+ picks id"]
+        V3A --> V3B --> V3C
+        V3NOTE["DECIDES: cloud (Claude)<br/>LEAVES BOARD: raw camera image<br/>(+ optional context)"]
+    end
+
+    CTX --> V1A
+    CTX --> V2A
+    CTX --> V3A
+    CAM -. local pick uses no image .- V1A
+    CAM -. image stays local .- V2A
+    CAM ==>|raw JPEG uploaded| V3A
+
+    RESULT["ChoiceOut / result<br/>{id, name, html, reasoning, variant}<br/>-> WebUISink -> display"]
+    V1C --> RESULT
+    V2C --> RESULT
+    V3C --> RESULT
+
+    classDef edge fill:#e8f4ff,stroke:#2b6cb0;
+    classDef cloud fill:#fdf2f8,stroke:#b83280;
+    classDef note fill:#fffbea,stroke:#b7791f,font-style:italic;
+    class V1A,V1B,V1C edge;
+    class V2A,V2B,V2C,V3A,V3B,V3C cloud;
+    class V1NOTE,V2NOTE,V3NOTE note;

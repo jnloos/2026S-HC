@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0e1116" />
+  <title>DigSig</title>
+  <!-- Inline favicon, sonst fragt der Browser /favicon.ico an -> 404. -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>%F0%9F%96%A5%EF%B8%8F</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="stage" class="stage">
+    <main id="main" class="frame primary" aria-label="content">
+      <div id="placeholder" class="placeholder">
+        <div class="placeholder__brand">DigSig</div>
+        <div class="placeholder__hint" id="placeholder-hint">waiting for trigger…</div>
+      </div>
+      <iframe
+        id="content-frame"
+        class="content-frame hidden"
+        title="signage content"
+        scrolling="no"
+        sandbox="allow-scripts allow-popups allow-forms"
+      ></iframe>
+      <div id="reasoning-toast" class="toast hidden" aria-live="polite"></div>
+    </main>
+
+    <button
+      id="pip"
+      class="frame secondary hidden"
+      type="button"
+      aria-label="swap views"
+    >
+      <canvas id="preview-canvas" width="320" height="180"></canvas>
+      <div id="detect-overlay" class="overlay">
+        <div id="audience-group" class="overlay__group muted">no audience</div>
+        <ul id="detect-list" class="overlay__list"></ul>
+      </div>
+      <div class="pip__hint">tap to swap</div>
+    </button>
+  </div>
+
+  <aside id="debug-panel" class="debug-panel hidden" aria-label="debug panel">
+    <header class="dbg__header">
+      <span class="dbg__title">DEBUG</span>
+      <span class="dbg__hint">press D to toggle</span>
+    </header>
+
+    <div class="dbg__status" id="dbg-status">
+      <span class="chip" id="chip-variant">variant —</span>
+      <span class="chip"><i class="dot" id="dot-cms"></i>CMS</span>
+      <span class="chip"><i class="dot" id="dot-llm"></i>LLM</span>
+      <span class="chip"><i class="dot" id="dot-cam"></i>CAM <span id="cam-fps">0</span>fps</span>
+    </div>
+    <div class="dbg__config" id="dbg-config"></div>
+
+    <section class="dbg__section">
+      <h3>Pipeline runs</h3>
+      <div id="dbg-runs" class="dbg__runs"></div>
+    </section>
+
+    <section class="dbg__section">
+      <h3>Last decision</h3>
+      <div id="dbg-decision" class="dbg__decision">— no selection yet —</div>
+    </section>
+
+    <section class="dbg__section">
+      <h3>Events &amp; logs</h3>
+      <div id="dbg-log" class="dbg__log"></div>
+    </section>
+  </aside>
+
+  <!-- Bundled socket.io client. The WebUI brick mounts the socket.io protocol
+       at /socket.io, so /socket.io/socket.io.js returns 400 — serve the client
+       as a local asset instead. -->
+  <script src="socket.io.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

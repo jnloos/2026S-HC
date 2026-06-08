@@ -1,0 +1,28 @@
+flowchart LR
+    classDef stage fill:#eaf2fb,stroke:#2b6cb0,stroke-width:1.2px,color:#1a202c;
+    classDef disp  fill:#efe7fb,stroke:#6b46c1,stroke-width:1.2px,color:#1a202c;
+    classDef edge  fill:#fff3e0,stroke:#dd6b20,stroke-width:1.2px,color:#1a202c;
+    classDef cloud fill:#e7f7ee,stroke:#2f855a,stroke-width:1.2px,color:#1a202c;
+
+    subgraph BOARD["Board-Anwendung &middot; Arduino UNO Q"]
+        direction LR
+        T["Trigger<br/>Timer / Person"]:::stage
+        A["Audience<br/>On-Device-Erkennung"]:::stage
+        S{"Selector<br/>Variantenschalter"}:::stage
+        K["Sink"]:::stage
+        W["Webapp<br/>Anzeige"]:::disp
+        LLM["On-Device-LLM<br/>llama.cpp &middot; Qwen 0.5B"]:::edge
+        T --> A --> S --> K --> W
+        S -- "V1 &middot; wählt lokal" --> LLM
+    end
+
+    subgraph API["API &middot; CMS (FastAPI)"]
+        direction TB
+        CLAUDE["Claude Haiku 4.5"]:::cloud
+        POOL[("Content-Pools")]:::cloud
+        CLAUDE --- POOL
+    end
+
+    S -. "V1 &middot; GET Pool" .-> POOL
+    S -- "V2 &middot; Kontext-Dict" --> CLAUDE
+    S -- "V3 &middot; Kamerabild" --> CLAUDE

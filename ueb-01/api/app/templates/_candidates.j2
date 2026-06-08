@@ -1,0 +1,15 @@
+{# Reusable rendering of pool candidates. Used by both variant prompts.
+
+   The ``description`` is the primary "what is this for?" signal — the HTML
+   may be image-heavy and uninformative on its own, so authors are expected
+   to write good descriptions. #}
+{%- for c in candidates -%}
+[id={{ c.id }}] name={{ c.name | tojson }}
+{% if c.description -%}
+description: {{ c.description }}
+{% endif -%}
+html:
+{{ c.html }}
+{% if not loop.last %}---
+{% endif %}
+{%- endfor -%}

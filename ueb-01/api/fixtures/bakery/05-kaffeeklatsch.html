@@ -1,0 +1,74 @@
+<style>
+  .bk-card-5 {
+    font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+    background:
+      linear-gradient(140deg, #f5ead7 0%, #ead6b8 60%, #d4b78a 100%);
+    color: #4a2c1a;
+    padding: 80px 64px;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(74, 44, 26, 0.3);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(74, 44, 26, 0.15);
+  }
+  .bk-card-5::before,
+  .bk-card-5::after {
+    content: "❦";
+    position: absolute;
+    font-size: 48px;
+    color: #8c5a3a;
+    opacity: 0.5;
+  }
+  .bk-card-5::before { top: 20px; left: 28px; }
+  .bk-card-5::after  { bottom: 20px; right: 28px; transform: rotate(180deg); }
+  .bk-card-5 .bk5-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 8px;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 14px;
+    opacity: 0.7;
+    margin: 0 0 24px;
+  }
+  .bk-card-5 .bk5-icon {
+    font-size: 130px;
+    line-height: 1;
+    display: inline-block;
+    animation: bk5-glow 4s ease-in-out infinite;
+  }
+  @keyframes bk5-glow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 200, 100, 0));   transform: scale(1);    }
+    50%      { filter: drop-shadow(0 0 24px rgba(255, 200, 100, 0.7)); transform: scale(1.04); }
+  }
+  .bk-card-5 h1 {
+    font-size: 80px;
+    margin: 16px 0 8px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: -1px;
+  }
+  .bk-card-5 .bk5-sub {
+    font-size: 28px;
+    opacity: 0.85;
+    margin: 0 0 32px;
+    font-style: italic;
+  }
+  .bk-card-5 .bk5-price {
+    display: inline-block;
+    background: #4a2c1a;
+    color: #f5ead7;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 56px;
+    font-weight: 900;
+    padding: 16px 40px;
+    border-radius: 4px;
+    letter-spacing: -1px;
+  }
+</style>
+<div class="bk-card-5">
+  <p class="bk5-eyebrow">Nachmittags-Klassiker</p>
+  <div class="bk5-icon">☕🍰</div>
+  <h1>Kaffeeklatsch</h1>
+  <p class="bk5-sub">Eine Tasse Kaffee und ein Stück Kuchen nach Wahl</p>
+  <div class="bk5-price">4,80&nbsp;€</div>
+</div>

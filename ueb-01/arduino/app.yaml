@@ -1,0 +1,10 @@
+name: DigSig Edge
+description: |
+  Digital Signage prototype — pipeline with switchable trigger (timer / person detection) and on-device LLM-driven content selection (Variant 1, edge-only).
+ports:
+- 7000
+bricks:
+- arduino:web_ui: {}
+- arduino:video_object_detection: {}
+- personal:llm: {}
+icon: 🖥️

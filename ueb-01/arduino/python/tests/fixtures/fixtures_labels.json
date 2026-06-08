@@ -1,0 +1,27 @@
+{
+  "child.jpg": {
+    "age_band": "child",
+    "gender": "male",
+    "has_face": true
+  },
+  "young-adult_female.jpg": {
+    "age_band": "young-adult",
+    "gender": "female",
+    "has_face": true
+  },
+  "young-adult_male.jpg": {
+    "age_band": "young-adult",
+    "gender": "male",
+    "has_face": true
+  },
+  "senior.jpg": {
+    "age_band": "senior",
+    "gender": "female",
+    "has_face": true
+  },
+  "noface.jpg": {
+    "age_band": null,
+    "gender": null,
+    "has_face": false
+  }
+}

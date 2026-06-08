@@ -1,0 +1,5 @@
+# Arduino App Lab — build/runtime cache
+.cache/
+
+# Machine-specific runtime overrides (CMS_URL/laptop IP etc.) — see runtime.env.xmpl.
+python/runtime.env

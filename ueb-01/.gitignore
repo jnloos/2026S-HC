@@ -1,0 +1,28 @@
+# --- Repo-weit ---
+
+# Lokale Claude-Code-Einstellungen (maschinenspezifisch). Die Knowledge-Base
+# unter .claude/knowledge/ wird hingegen committet.
+.claude/settings.local.json
+
+# Python bytecode (kann in jedem Teilprojekt entstehen, z.B. arduino/python/)
+__pycache__/
+*.py[cod]
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Globale Env-Dateien
+.env
+.env.*
+!.env.example
+
+# Lokaler Dev-Mode-Laufzeitstatus (PID/Log der lokalen API), siehe cli/dev.sh
+.dev/
+
+# Playwright-MCP-Artefakte (Browser-Konsolen-Logs / Snapshots), nicht versionieren
+.playwright-mcp/
+
+# Hinweis: projektspezifische Regeln stehen in api/.gitignore und arduino/.gitignore

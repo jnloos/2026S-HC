@@ -1,0 +1,6 @@
+flowchart LR
+    B[Board\nUNO Q]
+    C[CMS\nFastAPI + Claude]
+    B -- "V1: Auswahl on-device (LLM)" --> B
+    B -- "V2: Kontext-Dict" --> C
+    B -- "V3: Kamerabild" --> C

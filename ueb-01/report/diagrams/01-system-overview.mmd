@@ -1,0 +1,56 @@
+%% ARDU-DigSig-Prototype — System / component overview (runtime topology)
+%% What runs where, and the network links between parts.
+flowchart LR
+    subgraph BOARD["Arduino UNO Q board (dual-brain)"]
+        direction TB
+        subgraph MPU["Linux MPU (QRB2210 / Debian)"]
+            direction TB
+            APP["DigSig App<br/>arduino/python/main.py<br/>(strategy-slot pipeline)"]
+            WEBUI["arduino:web_ui brick<br/>signage display + debug PiP<br/>port 7000"]
+            VOD["arduino:video_object_detection<br/>brick (camera + YOLO)"]
+            PLLM["personal:llm brick<br/>(vendored)"]
+            APP --> WEBUI
+            APP --> VOD
+            APP --> PLLM
+        end
+        subgraph MCU["STM32 MCU (U585, Cortex-M33)"]
+            SKETCH["sketch.ino<br/>(MCU side, via Bridge)"]
+        end
+        subgraph DOCKER["docker net: digsig-prototype_default"]
+            direction TB
+            LLAMA["llamacpp-models-runner:9999<br/>llama.cpp OpenAI /v1<br/>(on-device LLM, V1)"]
+        end
+        CAM["USB webcam<br/>(Logitech C270)"]
+        APP -. Bridge RPC .- SKETCH
+        PLLM -->|HTTP /v1| LLAMA
+        CAM --> VOD
+    end
+
+    subgraph LAPTOP["Developer laptop (LAN)"]
+        direction TB
+        CADDY["Caddy :80<br/>/digsig/* -> 127.0.0.1:8000<br/>(strips prefix)"]
+        API["FastAPI CMS (api/)<br/>uvicorn 127.0.0.1:8000<br/>3 variant endpoints"]
+        DB[("SQLite + HTML files<br/>storage/pools/...")]
+        DEBUGUI["Debug UI /debug<br/>(opt-in)"]
+        CADDY --> API
+        API --> DB
+        API --> DEBUGUI
+    end
+
+    CLAUD["Claude API (Anthropic)<br/>claude-haiku-4-5<br/>vision + selection (V2/V3)"]
+
+    BROWSER["Browser<br/>signage / debug window"]
+
+    APP -->|"CMS_URL=http://&lt;laptop-ip&gt;/digsig<br/>GET pool / POST choose-*"| CADDY
+    API -->|"V2/V3 only<br/>messages.create"| CLAUD
+    WEBUI -->|socket.io :7000| BROWSER
+
+    classDef board fill:#e8f4ff,stroke:#2b6cb0;
+    classDef laptop fill:#eafaf1,stroke:#2f855a;
+    classDef cloud fill:#fdf2f8,stroke:#b83280;
+    classDef hw fill:#fffaf0,stroke:#b7791f;
+    class APP,WEBUI,VOD,PLLM,SKETCH board;
+    class LLAMA,FACE board;
+    class CADDY,API,DB,DEBUGUI laptop;
+    class CLAUD cloud;
+    class CAM,BROWSER hw;

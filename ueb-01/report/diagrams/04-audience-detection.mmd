@@ -1,0 +1,50 @@
+%% ARDU-DigSig-Prototype — Audience detection data flow (100% on-device at runtime)
+%% Camera frame -> YuNet -> per-face crop -> ONNX MobileNetV3 (age+gender)
+%% -> aggregate -> target_group -> context["audience"]. Model trained off-board on FairFace.
+%% Inference runs IN-PROCESS inside the App (no sidecar/container).
+flowchart TB
+    subgraph TRAIN["OFF-BOARD training (laptop, detection/) — NOT in the runtime path"]
+        direction LR
+        FF["FairFace dataset<br/>~108k faces, CC BY 4.0"]
+        TR["MobileNetV3-small, 2 heads<br/>train -> export_onnx"]
+        FF --> TR --> ART["audience_classifier.onnx (6.1 MB)<br/>+ labels.json + model_card.md"]
+    end
+
+    subgraph BOARD["ON-DEVICE runtime"]
+        direction TB
+        CAM["Camera frame (JPEG)<br/>via video_object_detection +<br/>FrameGrabber"]
+        FAC["FaceAudienceClassifier.classify()<br/>(never raises; degrades to unknown)"]
+
+        subgraph SIDE["AudiencePipeline (in-process: cv2 + onnxruntime)"]
+            direction TB
+            DEC["cv2.imdecode"]
+            YUN["YuNet face detection<br/>face_detection_yunet_2023mar.onnx<br/>score >= 0.6"]
+            CROP["per-face crop (+20% box)<br/>-> 1x3x112x112, RGB, normalized"]
+            ONNX["ONNX MobileNetV3<br/>age_logits + gender_logits<br/>-> softmax"]
+            AGG["aggregate -> target_group<br/>(rules from labels.json)"]
+            DEC --> YUN --> CROP --> ONNX --> AGG
+        end
+
+        CAM --> FAC -->|"classify(jpeg)"| DEC
+        AGG -->|"audience dict"| FAC
+        FAC -->|"context['audience']"| PIPE["Pipeline -> selector (V2/V3 prompt)"]
+    end
+
+    ART -. ships with the App<br/>arduino/python/audience/models .-> SIDE
+
+    subgraph LABELS["Label space (data-driven, labels.json)"]
+        direction TB
+        BANDS["5 age bands:<br/>child · teen · young-adult · adult · senior"]
+        GEN["2 genders: male · female"]
+        TG["9 target groups:<br/>families_with_children (any child = priority)<br/>young_women · young_men · adult_women · adult_men<br/>teens · seniors · adults_mixed · unknown (no face)"]
+    end
+    AGG -. uses .-> LABELS
+
+    classDef off fill:#f7f7f7,stroke:#718096,stroke-dasharray:4 3;
+    classDef dev fill:#e8f4ff,stroke:#2b6cb0;
+    classDef side fill:#eafaf1,stroke:#2f855a;
+    classDef lab fill:#fffbea,stroke:#b7791f;
+    class FF,TR,ART off;
+    class CAM,FAC,PIPE dev;
+    class DEC,YUN,CROP,ONNX,AGG side;
+    class BANDS,GEN,TG lab;

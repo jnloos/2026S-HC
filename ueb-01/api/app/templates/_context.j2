@@ -1,0 +1,15 @@
+{# Reusable rendering of the `context` dict — used by both V2 (text) and V3
+   (image) prompts. The dict is open-shaped: keys like `audience`, `weather`,
+   `time_of_day`, `loudness`, anything the client wants to send. We dump every
+   key/value pair so the model sees the full payload; `| tojson` keeps nested
+   dicts/lists readable instead of falling back to Python repr.
+
+   Callers MUST pass `context=` (possibly `None` or `{}`) — StrictUndefined
+   otherwise crashes the render. #}
+{%- if context %}
+{%- for k, v in context.items() %}
+- {{ k }}: {{ v | tojson }}
+{%- endfor %}
+{%- else %}
+(no context provided)
+{%- endif %}

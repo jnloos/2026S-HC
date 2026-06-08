@@ -1,0 +1,71 @@
+<style>
+  .bk-card-3 {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(170deg, #56c1d8 0%, #a8e0e9 55%, #fff4d6 100%);
+    color: #1a3a4a;
+    padding: 72px 56px;
+    border-radius: 28px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(50, 120, 160, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .bk-card-3::before {
+    content: "☀";
+    position: absolute;
+    top: 24px;
+    right: 36px;
+    font-size: 84px;
+    opacity: 0.7;
+    animation: bk3-spin 12s linear infinite;
+  }
+  @keyframes bk3-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  .bk-card-3 .bk3-icons {
+    font-size: 130px;
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .bk-card-3 .bk3-ice {
+    display: inline-block;
+    animation: bk3-float 2.8s ease-in-out infinite;
+  }
+  .bk-card-3 .bk3-ice.b { animation-delay: 1.4s; }
+  @keyframes bk3-float {
+    0%, 100% { transform: translateY(0) rotate(-3deg); }
+    50%      { transform: translateY(-10px) rotate(3deg); }
+  }
+  .bk-card-3 h1 {
+    font-size: 68px;
+    margin: 16px 0 8px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+  }
+  .bk-card-3 .bk3-sub {
+    font-size: 26px;
+    opacity: 0.85;
+    margin: 0 0 32px;
+  }
+  .bk-card-3 .bk3-price {
+    display: inline-block;
+    background: #1a3a4a;
+    color: #fff4d6;
+    font-size: 56px;
+    font-weight: 900;
+    padding: 16px 36px;
+    border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+</style>
+<div class="bk-card-3">
+  <div class="bk3-icons">
+    <span class="bk3-ice">🧊</span>
+    <span>🥤</span>
+    <span class="bk3-ice b">🍰</span>
+  </div>
+  <h1>Sommerfrische</h1>
+  <p class="bk3-sub">Eiskaffee & Beerenkuchen vom Blech</p>
+  <div class="bk3-price">6,20&nbsp;€</div>
+</div>
