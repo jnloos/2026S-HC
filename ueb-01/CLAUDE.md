@@ -162,7 +162,7 @@ uvicorn app.api.main:app --reload --host 0.0.0.0 --port 8000
 pytest                             # all tests (Claude API is mocked, isolated tmp STORAGE_DIR)
 pytest tests/test_routes.py::test_x # single test
 ```
-Copy `api/.env.xmpl` → `api/.env` and set `ANTHROPIC_API_KEY=...` for variants
+Copy `api/env.xmpl` → `api/.env` and set `ANTHROPIC_API_KEY=...` for variants
 2 & 3. Optional: `CLAUDE_MODEL` (default `claude-haiku-4-5`), `DEBUG_UI_ENABLED`,
 `DEBUG_TOKEN`.
 

@@ -47,7 +47,26 @@
 \section*{Einführung}
 Beruflich entwickle ich seit einiger Zeit an einem Digital-Signage-System (digitale Werbebeschilderung), welches Inhalte über einen zeitgesteuerten Ablaufplan ausspielt. Offensichtlich ist damit ohne das manuelle Eingreifen der Betreiber keine kontextsensitive Auswahl möglich und es geht Werbepotenzial verloren. Daraus ergibt sich für mich die unmittelbare praktische Frage, ob sich diese statischen Kanäle durch eine KI-gestützte, kontextabhängige Auswahl ersetzen lassen und welche Architektur die dafür nötigen KI-Funktionen am sinnvollsten umsetzt.
 
-Vor diesem Hintergrund habe ich im Rahmen dieses Projekts einen Prototyp für \textit{kontextsensitive Digital Signage} entwickelt, der drei architektonische Varianten der Inhaltsauswahl direkt vergleichbar macht: \textit{Edge-}, \textit{Hybrid-} und \textit{Cloud-Ansatz}. Auf den nächsten Seiten werden diese diskutiert und entlang von vier Kriterien bewertet: Performance (Latenz je Auswahl), Datenschutz (verlässt das Kamerabild das Gerät?), Korrektheit (wählt das System den situativ passenden Inhalt?) und Kosten (Cloud-Aufrufe und Bandbreite).
+Vor diesem Hintergrund habe ich im Rahmen dieses Projekts einen Prototyp für \textit{kontextsensitive Digital Signage} entwickelt, der drei architektonische Varianten der Inhaltsauswahl direkt vergleichbar macht: \textit{Edge-}, \textit{Hybrid-} und \textit{Cloud-Ansatz}. Auf den nächsten Seiten werden diese diskutiert und entlang von vier Kriterien bewertet: Performance (Latenz je Auswahl), Datenschutz (verlässt das Kamerabild das Gerät?), Korrektheit (wählt das System den situativ passenden Inhalt?) und Kosten (Cloud-Aufrufe und Bandbreite). Abbildung~\ref{fig:app} zeigt den Prototyp im Betrieb.
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[height=4.2cm]{figures/e2e-v1-signage.png}
+\caption{Ausgespielter Werbeinhalt.}
+\label{fig:app-content}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+\centering
+\includegraphics[height=4.2cm]{figures/e2e-overlay-1hz.png}
+\caption{On-device Zielgruppenerkennung.}
+\label{fig:app-detection}
+\end{subfigure}
+\caption{Der Prototyp im Betrieb.}
+\label{fig:app}
+\end{figure}
 
 \section*{Systemüberblick}
 Das System besteht aus zwei eigenständigen Anwendungen. Die erste läuft auf dem Board und ist insb. für das Sammeln von Bildinformationen und das Anzeigen der Werbeinhalte verantwortlich. Die zweite ist eine \texttt{FastAPI}-Anwendung, die als CMS die Inhalte verwaltet. Wo die Auswahl der anzuzeigenden Inhalte stattfindet, ist die zentrale Frage der Arbeit und unterscheidet sich je nach Variante.
