@@ -30,8 +30,10 @@ Monorepo top-level folders:
 - **`web/`** — Static assets for the **API's** opt-in debug UI; served by
   FastAPI under `/debug` and `/debug/static` when `DEBUG_UI_ENABLED=true`. Do
   not confuse with `arduino/assets/`, which is the Arduino App's own UI.
-- **`report/`** — Project documentation: `notes/` (chronological feature/issue
-  write-ups, e.g. `06-audience-detection.md`) and `diagrams/` (Mermaid + PNG).
+- **`report/`** — Project documentation. `essay/` holds the LaTeX report
+  (`report.tex` → `report.pdf`) — the **course deliverable**; `task/` the
+  assignment sheet; `notes/` chronological feature/issue write-ups (e.g.
+  `06-audience-detection.md`); `diagrams/` Mermaid + rendered PNG.
 
 Two separate web UIs exist — `arduino/assets/` is the signage display + live
 debug window served on the board (port 7000); `web/` is the FastAPI service's

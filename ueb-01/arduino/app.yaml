@@ -6,5 +6,10 @@ ports:
 bricks:
 - arduino:web_ui: {}
 - arduino:video_object_detection: {}
-- personal:llm: {}
+# personal:llm is only needed for SELECTOR_MODE=edge (V1, on-device LLM). It is
+# commented out to free RAM (the llama-server runner is pinned in memory with
+# --no-mmap on a 1.7 GB board that swaps). V2/V3 delegate selection to the CMS,
+# so main.py never constructs the LLM client for them. To run V1 again, restore
+# this line, re-sync, and redeploy the app.
+# - personal:llm: {}
 icon: 🖥️

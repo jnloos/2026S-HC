@@ -22,7 +22,7 @@ API_DIR="$REPO_ROOT/api"
 VENV="$API_DIR/.venv"
 # uvicorn runs internally + unprivileged; Caddy (port 80) fronts it externally
 # under /digsig. So bind to localhost only — 8000 is not exposed on the LAN.
-PORT="${API_PORT:-8000}"
+PORT="${API_PORT:-8004}"
 HOST="${API_HOST:-127.0.0.1}"
 CMS_PATH="${CMS_PATH:-/digsig}"   # Caddy path through which the board reaches the API
 RUN_DIR="$REPO_ROOT/.dev"

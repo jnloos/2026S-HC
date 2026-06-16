@@ -191,8 +191,12 @@ def main() -> None:
 
     threading.Thread(target=_content_rebroadcast, name="content-rebroadcast", daemon=True).start()
 
-    if settings.debug and detector is not None:
-        DebugStreamer(ui=ui, detector=detector).start()
+    # Live preview for the debug PiP. Pulls from the shared FrameGrabber (the
+    # single on_detect_all owner) rather than registering a second callback on
+    # the brick — the brick keeps only one such callback, so a second register
+    # would clobber the grabber's.
+    if settings.debug and grabber is not None:
+        DebugStreamer(ui=ui, frame_provider=grabber.get).start()
 
     # Independent demographic overlay for the debug preview — classifies the live
     # camera frame at its own (higher) cadence in-process and emits the

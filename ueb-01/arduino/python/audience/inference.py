@@ -28,6 +28,15 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
+# Cap the inference thread pools so a classify burst can't grab all of the
+# board's (4) cores. ONNX Runtime and OpenCV both default to one thread per
+# core; left uncapped they momentarily starve the brick's camera-feed thread,
+# which stalls the JPEG stream to the EI runner and crashes its capture pipeline
+# ("Capture process failed with code 1" -> runner restart -> broken pipe -> the
+# debug preview freezes/blanks). 2 leaves ~2 cores for the feed + EI runner;
+# tune via AUDIENCE_INFER_THREADS (try 1 if the runner still crashes).
+_INFER_THREADS = max(1, int(os.environ.get("AUDIENCE_INFER_THREADS", "2")))
+
 LABELS_FILE = "labels.json"
 CLASSIFIER_FILE = "audience_classifier.onnx"
 YUNET_FILE = "face_detection_yunet_2023mar.onnx"
@@ -79,10 +88,18 @@ class AudiencePipeline:
         self.rules: dict[str, Any] = self.labels["target_group_rules"]
 
         # --- ONNX classifier session ---
+        # Thread-capped (see _INFER_THREADS) so inference leaves cores free for
+        # the camera feed / EI runner.
         classifier_path = os.path.join(self.model_dir, CLASSIFIER_FILE)
+        so = ort.SessionOptions()
+        so.intra_op_num_threads = _INFER_THREADS
+        so.inter_op_num_threads = 1
         self.session = ort.InferenceSession(
-            classifier_path, providers=["CPUExecutionProvider"]
+            classifier_path, sess_options=so, providers=["CPUExecutionProvider"]
         )
+
+        # OpenCV (YuNet detect / imdecode / resize) also defaults to all cores.
+        cv2.setNumThreads(_INFER_THREADS)
 
         # --- YuNet face detector ---
         yunet_path = os.path.join(self.model_dir, YUNET_FILE)

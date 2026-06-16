@@ -113,7 +113,11 @@ def _load() -> Settings:
         llm_timeout_sec=float(os.getenv("LLM_TIMEOUT_SEC", "240")),
         # Debug-preview demographic overlay cadence — independent of the pipeline
         # trigger, runs continuously in debug mode (see debug/audience_overlay.py).
-        overlay_interval_sec=float(os.getenv("OVERLAY_INTERVAL_SEC", "1.0")),
+        # Each tick is a full in-process ONNX+cv2 inference that holds the GIL and
+        # starves the brick's websocket-recv loop (which refreshes the preview
+        # frame); 2s keeps the overlay responsive while leaving headroom so the
+        # live preview doesn't freeze/blank under inference load.
+        overlay_interval_sec=float(os.getenv("OVERLAY_INTERVAL_SEC", "2.0")),
         enable_camera=enable_camera,
         debug=_bool(os.getenv("DEBUG"), default=True),
     )
