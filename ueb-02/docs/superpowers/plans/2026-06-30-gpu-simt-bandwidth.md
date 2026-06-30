@@ -818,7 +818,7 @@ git commit -m "Add Task 2 streaming kernel with pattern and occupancy sweeps"
   - `numpy_divergence(n: int, k: int, degrees: list[int]) -> list[dict]` → per-degree `{seconds,...}` showing branch cost is ~flat
   - `numpy_stream(n: int) -> dict` and `numpy_gather(n: int) -> dict` → `{pattern,n,seconds,gbps}` (Task 2 contrast: sequential vs cache-miss)
 
-- [ ] **Step 1: Write failing test `tests/test_cpu_baseline.py`**
+- [x] **Step 1: Write failing test `tests/test_cpu_baseline.py`**
 
 ```python
 from gpubench import cpu_baseline
@@ -841,12 +841,12 @@ def test_numpy_divergence_rows():
     assert {r["degree"] for r in rows} == {1, 4}
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_cpu_baseline.py -v`
 Expected: FAIL (`No module named 'gpubench.cpu_baseline'`).
 
-- [ ] **Step 3: Implement `gpubench/cpu_baseline.py`**
+- [x] **Step 3: Implement `gpubench/cpu_baseline.py`**
 
 ```python
 """CPU baselines (NumPy) mirroring the two GPU benchmarks."""
@@ -937,12 +937,12 @@ def numpy_gather(n: int) -> dict:
             "seconds": secs, "gbps": _stream_gbps(n, secs)}
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_cpu_baseline.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ueb-02/gpubench/cpu_baseline.py ueb-02/tests/test_cpu_baseline.py
