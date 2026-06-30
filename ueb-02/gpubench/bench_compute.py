@@ -47,9 +47,10 @@ def run_scaling(ctx, ns: list[int], k: int) -> list[dict]:
 
 def run_divergence(ctx, n: int, k: int, degrees: list[int]) -> list[dict]:
     queue = runner.make_queue(ctx)
+    src = load_source()  # read once; only the -D DEGREE build option changes
     rows = []
     for d in degrees:
-        prog = runner.build_program(ctx, load_source(), options=f"-D KITERS={k} -D DEGREE={d}")
+        prog = runner.build_program(ctx, src, options=f"-D KITERS={k} -D DEGREE={d}")
         kernel = cl.Kernel(prog, "compute_divergent")  # retrieve once per build
         out = cl.Buffer(ctx, cl.mem_flags.WRITE_ONLY, size=n * 4)
 

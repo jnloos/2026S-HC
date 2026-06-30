@@ -70,7 +70,9 @@ def main(argv: list[str] | None = None) -> int:
         _write(out, "compute_divergence", info,
                bench_compute.run_divergence(ctx, sw["mem_n"], 256, sw["degrees"]))
     if args.command in ("memory", "all"):
-        _write(out, "memory_patterns", info, bench_memory.run_patterns(ctx, sw["mem_n"], 16))
+        # stride 521 is prime, hence coprime to the power-of-two mem_n, so the
+        # strided pattern sweeps the whole array with a large (uncoalesced) gap.
+        _write(out, "memory_patterns", info, bench_memory.run_patterns(ctx, sw["mem_n"], 521))
         _write(out, "memory_occupancy", info,
                bench_memory.run_occupancy(ctx, sw["mem_n"], "coalesced", sw["wgs"]))
     return 0

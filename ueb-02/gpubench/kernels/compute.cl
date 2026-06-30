@@ -29,20 +29,14 @@ __kernel void compute_divergent(__global float *out, const int n) {
     if (gid >= n) return;
     float x = 1.0f + gid * 1e-7f;
     int lane = get_local_id(0) % DEGREE;
-    // Each branch does identical work; divergence forces serialization.
-    switch (lane) {
-        case 0: x = work(x); break;
-        case 1: x = work(x); break;
-        case 2: x = work(x); break;
-        case 3: x = work(x); break;
-        case 4: x = work(x); break;
-        case 5: x = work(x); break;
-        case 6: x = work(x); break;
-        case 7: x = work(x); break;
-        default: {
-            // lanes >= 8 fan out further by their own id
-            for (int s = 0; s < lane; ++s) x = work(x) * 1.0f;
-            break;
+    // Every work-item runs work() exactly once, but in a different loop
+    // iteration chosen by its lane. Within a wavefront the DEGREE lane
+    // groups take their branch on different iterations, so the hardware
+    // serializes DEGREE equal-cost paths while the useful work per item
+    // (and thus the FLOP count) stays constant for any DEGREE.
+    for (int b = 0; b < DEGREE; ++b) {
+        if (lane == b) {
+            x = work(x);
         }
     }
     out[gid] = x;

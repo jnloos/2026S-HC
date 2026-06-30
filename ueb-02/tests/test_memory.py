@@ -31,6 +31,22 @@ def test_kernel_computes_a_times_c(cl_context):
 
 
 def test_run_patterns_reports_bandwidth(cl_context):
-    rows = bench_memory.run_patterns(cl_context, n=1 << 18, stride=16)
+    rows = bench_memory.run_patterns(cl_context, n=1 << 18, stride=521)
     assert {r["pattern"] for r in rows} == set(bench_memory.PATTERNS)
     assert all(r["gbps"] > 0 for r in rows)
+
+
+def test_make_index_strided_rejects_non_coprime():
+    import pytest
+    with pytest.raises(ValueError):
+        bench_memory.make_index("strided", n=4096, stride=16, seed=1234)
+
+
+def test_run_occupancy_handles_indivisible_n(cl_context):
+    # n is not a multiple of any wg here; the launch must pad the global size
+    # instead of raising CL_INVALID_WORK_GROUP_SIZE.
+    n = (1 << 16) + 7
+    rows = bench_memory.run_occupancy(cl_context, n=n, pattern="coalesced", wg_sizes=[16, 64])
+    assert {r["wg"] for r in rows} == {16, 64}
+    assert all(r["gbps"] > 0 for r in rows)
+
