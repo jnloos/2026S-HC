@@ -171,7 +171,7 @@ git commit -m "Scaffold gpubench package and OpenCL test harness"
   - `wavefront_width(ctx: cl.Context) -> int`
   - `peak_bandwidth_gbps(ctx: cl.Context, nbytes: int = 256*1024*1024) -> float`
 
-- [ ] **Step 1: Write failing test `tests/test_device.py`**
+- [x] **Step 1: Write failing test `tests/test_device.py`**
 
 ```python
 import pytest
@@ -197,12 +197,12 @@ def test_peak_bandwidth_positive(cl_context):
     assert bw > 0
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_device.py -v`
 Expected: FAIL (`ModuleNotFoundError: No module named 'gpubench.device'`) — or SKIP if no device.
 
-- [ ] **Step 3: Implement `gpubench/device.py`**
+- [x] **Step 3: Implement `gpubench/device.py`**
 
 ```python
 """OpenCL device discovery, info query, and a peak-bandwidth probe."""
@@ -323,12 +323,12 @@ def peak_bandwidth_gbps(ctx: cl.Context, nbytes: int = 256 * 1024 * 1024) -> flo
     return (moved / best) / 1e9
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_device.py -v`
 Expected: PASS (or SKIP without a device).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ueb-02/gpubench/device.py ueb-02/tests/test_device.py

@@ -5,7 +5,7 @@ __pycache__/
 .pytest_cache/
 
 # Ralph loop state (local only)
-.claude/.ralph-loop.local.md
+.claude/ralph-loop.local.md
 
 # LaTeX build artifacts
 report/essay/*.aux
