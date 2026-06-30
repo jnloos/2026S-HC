@@ -38,7 +38,7 @@
 - Consumes: nothing.
 - Produces: `tests/conftest.py` fixture `cl_context` (a `pyopencl.Context` or `pytest.skip`), used by every later test; `gpubench` importable package.
 
-- [ ] **Step 1: Install OpenCL runtime + Python deps**
+- [x] **Step 1: Install OpenCL runtime + Python deps**
 
 On Linux (this dev box is Ubuntu):
 ```bash
@@ -53,7 +53,7 @@ cd ueb-02
 python -m pip install -r requirements.txt   # after Step 2 writes the file
 ```
 
-- [ ] **Step 2: Write `requirements.txt`**
+- [x] **Step 2: Write `requirements.txt`**
 
 ```
 pyopencl>=2024.1
@@ -62,7 +62,7 @@ matplotlib>=3.8
 pytest>=8.0
 ```
 
-- [ ] **Step 3: Write package init files**
+- [x] **Step 3: Write package init files**
 
 `gpubench/__init__.py`:
 ```python
@@ -78,7 +78,7 @@ SEED = 1234
 ```
 `tests/__init__.py`: empty file.
 
-- [ ] **Step 4: Write `pytest.ini`**
+- [x] **Step 4: Write `pytest.ini`**
 
 ```ini
 [pytest]
@@ -87,7 +87,7 @@ python_files = test_*.py
 addopts = -ra
 ```
 
-- [ ] **Step 5: Write `tests/conftest.py`**
+- [x] **Step 5: Write `tests/conftest.py`**
 
 ```python
 import pytest
@@ -122,7 +122,7 @@ def cl_context():
     return cl.Context([dev])
 ```
 
-- [ ] **Step 6: Write `tests/test_environment.py`**
+- [x] **Step 6: Write `tests/test_environment.py`**
 
 ```python
 def test_gpubench_imports():
@@ -140,14 +140,14 @@ def test_context_or_skip(cl_context):
     assert cl_context is not None
 ```
 
-- [ ] **Step 7: Create `results/.gitkeep`** (empty file, so the dir is tracked).
+- [x] **Step 7: Create `results/.gitkeep`** (empty file, so the dir is tracked).
 
-- [ ] **Step 8: Run tests**
+- [x] **Step 8: Run tests**
 
 Run: `cd ueb-02 && python -m pytest -v`
 Expected: PASS (or `test_context_or_skip` SKIPPED if no device on this box; the other two PASS).
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add ueb-02/requirements.txt ueb-02/gpubench ueb-02/tests ueb-02/pytest.ini ueb-02/results/.gitkeep

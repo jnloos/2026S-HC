@@ -1,0 +1,20 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Ralph loop state (local only)
+.claude/.ralph-loop.local.md
+
+# LaTeX build artifacts
+report/essay/*.aux
+report/essay/*.bbl
+report/essay/*.bcf
+report/essay/*.blg
+report/essay/*.fdb_latexmk
+report/essay/*.fls
+report/essay/*.log
+report/essay/*.out
+report/essay/*.run.xml
+report/essay/*.toc

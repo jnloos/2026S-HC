@@ -1,0 +1,8 @@
+# gpubench (Ubung 2 benchmarks)
+pyopencl>=2024.1
+numpy>=1.26
+matplotlib>=3.8
+pytest>=8.0
+
+# unrelated cs.cpp / lib/Importer.py demo
+pybind11~=3.0.1
