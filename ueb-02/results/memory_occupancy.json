@@ -1,0 +1,70 @@
+{
+  "device": {
+    "name": "cpu-skylake-avx512-AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M",
+    "dtype": "CPU",
+    "compute_units": 8,
+    "max_work_group_size": 4096,
+    "wavefront": 8,
+    "global_mem_bytes": 14619959296,
+    "max_clock_mhz": 1996,
+    "local_mem_bytes": 524288
+  },
+  "rows": [
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 8,
+      "seconds": 0.01076856,
+      "gbps": 37.39155318817001,
+      "wavefronts_per_group": 1
+    },
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 16,
+      "seconds": 0.008829096,
+      "gbps": 45.60525607604674,
+      "wavefronts_per_group": 2
+    },
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 32,
+      "seconds": 0.009099843,
+      "gbps": 44.24836604323833,
+      "wavefronts_per_group": 4
+    },
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 64,
+      "seconds": 0.008697469000000001,
+      "gbps": 46.29544342152872,
+      "wavefronts_per_group": 8
+    },
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 128,
+      "seconds": 0.008453051000000001,
+      "gbps": 47.63406538065368,
+      "wavefronts_per_group": 16
+    },
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 256,
+      "seconds": 0.008323338000000001,
+      "gbps": 48.37640667722492,
+      "wavefronts_per_group": 32
+    },
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "wg": 512,
+      "seconds": 0.008302109,
+      "gbps": 48.50010810506101,
+      "wavefronts_per_group": 64
+    }
+  ]
+}

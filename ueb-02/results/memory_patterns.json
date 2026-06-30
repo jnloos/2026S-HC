@@ -1,0 +1,35 @@
+{
+  "device": {
+    "name": "cpu-skylake-avx512-AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M",
+    "dtype": "CPU",
+    "compute_units": 8,
+    "max_work_group_size": 4096,
+    "wavefront": 8,
+    "global_mem_bytes": 14619959296,
+    "max_clock_mhz": 1996,
+    "local_mem_bytes": 524288
+  },
+  "rows": [
+    {
+      "pattern": "coalesced",
+      "n": 33554432,
+      "stride": 521,
+      "seconds": 0.008693051,
+      "gbps": 46.318971785625095
+    },
+    {
+      "pattern": "strided",
+      "n": 33554432,
+      "stride": 521,
+      "seconds": 0.034850309,
+      "gbps": 11.553790929084732
+    },
+    {
+      "pattern": "gather",
+      "n": 33554432,
+      "stride": 521,
+      "seconds": 0.043570431,
+      "gbps": 9.24143219974115
+    }
+  ]
+}

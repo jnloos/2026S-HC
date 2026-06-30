@@ -1340,26 +1340,26 @@ git commit -m "Add README with cross-platform setup and run instructions"
 - Consumes: Task 7 CLI, Task 8 plots.
 - Produces: committed `results/*.json` and `report/essay/figures/*.png` for the report.
 
-- [ ] **Step 1: Run the full GPU sweeps**
+- [x] **Step 1: Run the full GPU sweeps**
 
 Run: `cd ueb-02 && python -m gpubench all --device gpu`
 Expected: `results/device_info.json`, `compute_scaling.json`, `compute_divergence.json`, `memory_patterns.json`, `memory_occupancy.json`.
 
-- [ ] **Step 2: Run CPU baselines**
+- [x] **Step 2: Run CPU baselines**
 
 Run: `cd ueb-02 && python -m gpubench baseline`
 Expected: `results/baseline.json`.
 
-- [ ] **Step 3: Generate figures**
+- [x] **Step 3: Generate figures**
 
 Run: `cd ueb-02 && python -m gpubench plots`
 Expected: `report/essay/figures/scaling.png`, `divergence.png`, `patterns.png`, `occupancy.png`.
 
-- [ ] **Step 4: Sanity-check the numbers**
+- [x] **Step 4: Sanity-check the numbers**
 
 Confirm: scaling curve rises then plateaus; divergence throughput falls roughly toward `1/degree`; coalesced > strided > gather bandwidth; occupancy curve rises with work-group size. If a curve looks wrong, revisit the relevant `bench_*` module before writing prose around it.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ueb-02/results/*.json ueb-02/report/essay/figures/*.png
