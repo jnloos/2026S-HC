@@ -1386,7 +1386,7 @@ author name (`Jan-Niclas Loosen`), `Mat.Nr. UNKENNTLICH`, course `Het. Computing
 Hardware Projekt`, `Universität Trier`, `\today`. Unnumbered `\section*`. German prose,
 first-person, `\texttt{}` for identifiers, `\autocite` for references.
 
-- [ ] **Step 1: Write `report/essay/.gitignore`**
+- [x] **Step 1: Write `report/essay/.gitignore`**
 
 ```
 *.aux
@@ -1399,7 +1399,7 @@ first-person, `\texttt{}` for identifiers, `\autocite` for references.
 *.toc
 ```
 
-- [ ] **Step 2: Write `report/essay/references.bib`**
+- [x] **Step 2: Write `report/essay/references.bib`**
 
 ```bibtex
 @misc{pyopencl,
@@ -1422,7 +1422,7 @@ first-person, `\texttt{}` for identifiers, `\autocite` for references.
 }
 ```
 
-- [ ] **Step 3: Write `report/essay/report.tex`**
+- [x] **Step 3: Write `report/essay/report.tex`**
 
 Use this skeleton; fill the measured numbers from `results/*.json` into the prose and the
 results table. Every `<...>` placeholder must be replaced with a real measured value
@@ -1514,12 +1514,12 @@ Bandbreite gather       & <value> & <value> \\
 \end{document}
 ```
 
-- [ ] **Step 4: Build the PDF**
+- [x] **Step 4: Build the PDF**
 
 Run: `cd ueb-02/report/essay && pdflatex report.tex && bibtex report && pdflatex report.tex && pdflatex report.tex`
 Expected: `report.pdf` produced with no unresolved references and **no `<...>` placeholders remaining**.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ueb-02/report/essay/report.tex ueb-02/report/essay/references.bib ueb-02/report/essay/.gitignore ueb-02/report/essay/report.pdf

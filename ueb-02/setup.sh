@@ -44,7 +44,7 @@ apt-get install -y --no-install-recommends \
     build-essential \
     `# LaTeX toolchain for the report` \
     texlive-latex-recommended texlive-latex-extra texlive-lang-german \
-    texlive-bibtex-extra biber latexmk
+    texlive-bibtex-extra biber latexmk lmodern
 
 # --- 2. verify an OpenCL device is visible ----------------------------------------------
 echo
