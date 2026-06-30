@@ -454,7 +454,7 @@ git commit -m "Add profiled kernel timing harness"
 
 **Kernel math:** each work-item starts from `x = 1.0 + gid*1e-7` and runs `k` FMA steps `x = x*COEF + BIAS` (2 FLOPs each). Divergent variant: `switch(get_local_id(0) % degree)` with `degree` branches, each doing the same `k`-step FMA loop, so a wavefront serializes `degree` paths.
 
-- [ ] **Step 1: Write `gpubench/kernels/compute.cl`**
+- [x] **Step 1: Write `gpubench/kernels/compute.cl`**
 
 ```c
 // Configurable arithmetic load, one work-item per element.
@@ -508,7 +508,7 @@ __kernel void compute_divergent(__global float *out, const int n) {
 }
 ```
 
-- [ ] **Step 2: Write failing test `tests/test_compute.py`**
+- [x] **Step 2: Write failing test `tests/test_compute.py`**
 
 ```python
 import numpy as np
@@ -541,12 +541,12 @@ def test_run_divergence_degrades(cl_context):
     assert {r["degree"] for r in rows} == {1, 2}
 ```
 
-- [ ] **Step 3: Run to verify it fails**
+- [x] **Step 3: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_compute.py -v`
 Expected: FAIL (`No module named 'gpubench.bench_compute'`) or SKIP.
 
-- [ ] **Step 4: Implement `gpubench/bench_compute.py`**
+- [x] **Step 4: Implement `gpubench/bench_compute.py`**
 
 ```python
 """Task 1: compute-bound kernel — scaling and warp-divergence sweeps."""
@@ -610,12 +610,12 @@ def run_divergence(ctx, n: int, k: int, degrees: list[int]) -> list[dict]:
     return rows
 ```
 
-- [ ] **Step 5: Run to verify it passes**
+- [x] **Step 5: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_compute.py -v`
 Expected: PASS (or SKIP).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add ueb-02/gpubench/kernels/compute.cl ueb-02/gpubench/bench_compute.py ueb-02/tests/test_compute.py
