@@ -1263,7 +1263,7 @@ git commit -m "Add matplotlib figure generation from results JSON"
 - Consumes: nothing (documentation).
 - Produces: human-facing run instructions.
 
-- [ ] **Step 1: Write `README.md`**
+- [x] **Step 1: Write `README.md`**
 
 ````markdown
 # Übung 2 — SIMT-Ausführungsmodell & GPU-Speicherbandbreite
@@ -1314,9 +1314,9 @@ python -m pytest -v   # device-bound tests skip automatically if no OpenCL devic
 - `report/essay/` — LaTeX report (German)
 ````
 
-- [ ] **Step 2: Verify it renders** (no command; visual check that code blocks are closed).
+- [x] **Step 2: Verify it renders** (no command; visual check that code blocks are closed).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add ueb-02/README.md
