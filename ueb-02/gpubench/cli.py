@@ -12,16 +12,18 @@ from . import bench_compute, bench_memory, cpu_baseline, device
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="gpubench", description="GPU SIMT and bandwidth benchmarks")
     p.add_argument("command",
-                   choices=["info", "compute", "memory", "baseline", "all", "plots"])
+                   choices=["info", "compute", "memory", "baseline", "all", "plots", "values"])
     p.add_argument("--device", default=None, help="gpu | cpu | <index>")
     p.add_argument("--quick", action="store_true", help="small sweeps for a smoke run")
     p.add_argument("--out", default="results", help="output directory for JSON")
     return p
 
 
-def _write(out_dir: Path, name: str, info, rows) -> None:
+def _write(out_dir: Path, name: str, info, rows, extra: dict | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     payload = {"device": dataclasses.asdict(info) if info else None, "rows": rows}
+    if extra:
+        payload.update(extra)
     (out_dir / f"{name}.json").write_text(json.dumps(payload, indent=2))
 
 
@@ -51,6 +53,11 @@ def main(argv: list[str] | None = None) -> int:
         plots.generate_all(out, Path("report/essay/figures"))
         return 0
 
+    if args.command == "values":
+        from . import report_values
+        report_values.generate_values(out, Path("report/essay/values.tex"))
+        return 0
+
     if args.command == "baseline":
         rows = (
             [cpu_baseline.numpy_compute(n, 256) for n in sw["ns"]]
@@ -64,7 +71,10 @@ def main(argv: list[str] | None = None) -> int:
     info = device.query_device_info(ctx)
 
     if args.command in ("info", "all"):
-        _write(out, "device_info", info, [])
+        # peak copy bandwidth is the reference for the Task 2 numbers; store it
+        # alongside the device facts so the report can cite it without a device.
+        peak = device.peak_bandwidth_gbps(ctx, nbytes=64 * 1024 * 1024)
+        _write(out, "device_info", info, [], extra={"peak_bandwidth_gbps": peak})
     if args.command in ("compute", "all"):
         _write(out, "compute_scaling", info, bench_compute.run_scaling(ctx, sw["ns"], 256))
         _write(out, "compute_divergence", info,

@@ -38,16 +38,19 @@ fi
 
 echo "==> $($PY --version) | device=${DEVICE} ${QUICK:+(quick)}"
 
-echo "==> [1/4] Device sweeps (Aufgabe 1 + 2) -> results/"
+echo "==> [1/5] Device sweeps (Aufgabe 1 + 2) -> results/"
 $PY -m gpubench all --device "${DEVICE}" ${QUICK}
 
-echo "==> [2/4] CPU baselines (NumPy) -> results/"
+echo "==> [2/5] CPU baselines (NumPy) -> results/"
 $PY -m gpubench baseline ${QUICK}
 
-echo "==> [3/4] Figures from results JSON -> report/essay/figures/"
+echo "==> [3/5] Figures from results JSON -> report/essay/figures/"
 $PY -m gpubench plots
 
-echo "==> [4/4] Rebuild report PDF -> report/essay/report.pdf"
+echo "==> [4/5] Report values (numbers + device flags) -> report/essay/values.tex"
+$PY -m gpubench values
+
+echo "==> [5/5] Rebuild report PDF -> report/essay/report.pdf"
 if command -v latexmk >/dev/null 2>&1; then
     ( cd report/essay && latexmk -pdf -interaction=nonstopmode -halt-on-error report.tex >/dev/null )
     ( cd report/essay && latexmk -c >/dev/null 2>&1 || true )   # tidy aux files, keep the PDF

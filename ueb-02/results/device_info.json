@@ -9,5 +9,6 @@
     "max_clock_mhz": 1996,
     "local_mem_bytes": 524288
   },
-  "rows": []
+  "rows": [],
+  "peak_bandwidth_gbps": 40.75129388003699
 }
