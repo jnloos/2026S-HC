@@ -351,7 +351,7 @@ git commit -m "Add OpenCL device discovery, info query and peak-bandwidth probe"
   - `time_event(events: list[cl.Event]) -> float` — median seconds from profiling events
   - `time_kernel(queue, callable_launch, *, warmup:int=2, repeats:int=7) -> float` where `callable_launch() -> cl.Event` enqueues one launch and returns its event; returns median seconds.
 
-- [ ] **Step 1: Write failing test `tests/test_runner.py`**
+- [x] **Step 1: Write failing test `tests/test_runner.py`**
 
 ```python
 import numpy as np
@@ -376,12 +376,12 @@ def test_time_kernel_runs_and_is_positive(cl_context):
     assert secs > 0
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_runner.py -v`
 Expected: FAIL (`No module named 'gpubench.runner'`) or SKIP.
 
-- [ ] **Step 3: Implement `gpubench/runner.py`**
+- [x] **Step 3: Implement `gpubench/runner.py`**
 
 ```python
 """Build OpenCL programs and time kernels with profiling events."""
@@ -422,12 +422,12 @@ def time_kernel(
     return median(samples)
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_runner.py -v`
 Expected: PASS (or SKIP).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ueb-02/gpubench/runner.py ueb-02/tests/test_runner.py
