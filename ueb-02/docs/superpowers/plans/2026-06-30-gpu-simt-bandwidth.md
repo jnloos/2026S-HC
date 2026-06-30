@@ -643,7 +643,7 @@ git commit -m "Add Task 1 compute kernel with scaling and divergence sweeps"
 
 **Kernel:** `b[i] = a[idx[i]] * c`. The index buffer encodes the pattern (coalesced = identity, strided = `(i*stride)%n`, gather = random permutation), so one kernel times all three honestly (gather pays one extra index read; accounted in bytes).
 
-- [ ] **Step 1: Write `gpubench/kernels/memory.cl`**
+- [x] **Step 1: Write `gpubench/kernels/memory.cl`**
 
 ```c
 // Streaming kernel b[i] = a[idx[i]] * c, low arithmetic intensity.
@@ -658,7 +658,7 @@ __kernel void stream(__global const float *a,
 }
 ```
 
-- [ ] **Step 2: Write failing test `tests/test_memory.py`**
+- [x] **Step 2: Write failing test `tests/test_memory.py`**
 
 ```python
 import numpy as np
@@ -699,12 +699,12 @@ def test_run_patterns_reports_bandwidth(cl_context):
     assert all(r["gbps"] > 0 for r in rows)
 ```
 
-- [ ] **Step 3: Run to verify it fails**
+- [x] **Step 3: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_memory.py -v`
 Expected: FAIL (`No module named 'gpubench.bench_memory'`) or SKIP (device tests).
 
-- [ ] **Step 4: Implement `gpubench/bench_memory.py`**
+- [x] **Step 4: Implement `gpubench/bench_memory.py`**
 
 ```python
 """Task 2: memory-bound streaming kernel — patterns and occupancy sweeps."""
@@ -791,12 +791,12 @@ def run_occupancy(ctx, n: int, pattern: str, wg_sizes: list[int]) -> list[dict]:
     return rows
 ```
 
-- [ ] **Step 5: Run to verify it passes**
+- [x] **Step 5: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_memory.py -v`
 Expected: PASS (or device tests SKIP; `make_index` tests PASS regardless).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add ueb-02/gpubench/kernels/memory.cl ueb-02/gpubench/bench_memory.py ueb-02/tests/test_memory.py
