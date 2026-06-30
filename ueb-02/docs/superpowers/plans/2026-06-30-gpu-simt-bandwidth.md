@@ -1114,7 +1114,7 @@ git commit -m "Add CLI orchestration and JSON result dumping"
   - Individual figure functions: `plot_scaling`, `plot_divergence`, `plot_patterns`, `plot_occupancy` — each `(data: dict, out_path: Path) -> Path`.
   - Uses matplotlib `Agg` backend (no display); skips a figure whose JSON is absent.
 
-- [ ] **Step 1: Write failing test `tests/test_plots.py`**
+- [x] **Step 1: Write failing test `tests/test_plots.py`**
 
 ```python
 import json
@@ -1141,12 +1141,12 @@ def test_generate_all_handles_missing(tmp_path):
     assert any(p.name == "scaling.png" for p in made)
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_plots.py -v`
 Expected: FAIL (`No module named 'gpubench.plots'`).
 
-- [ ] **Step 3: Implement `gpubench/plots.py`**
+- [x] **Step 3: Implement `gpubench/plots.py`**
 
 ```python
 """Generate report figures from results JSON. GPU not required."""
@@ -1240,12 +1240,12 @@ def generate_all(results_dir: Path, figures_dir: Path) -> list[Path]:
     return made
 ```
 
-- [ ] **Step 4: Run to verify it passes**
+- [x] **Step 4: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_plots.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add ueb-02/gpubench/plots.py ueb-02/tests/test_plots.py
