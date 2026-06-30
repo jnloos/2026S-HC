@@ -966,7 +966,7 @@ git commit -m "Add NumPy CPU baselines for both benchmarks"
   - Subcommands: `info`, `compute`, `memory`, `baseline`, `all` (writes JSON into `results/`), `plots` (delegates to Task 8). Common flags: `--device`, `--quick`, `--out results`.
   - JSON written per run: `results/<name>.json` with `{"device": <DeviceInfo dict>, "rows": [...]}`.
 
-- [ ] **Step 1: Write failing test `tests/test_cli.py`**
+- [x] **Step 1: Write failing test `tests/test_cli.py`**
 
 ```python
 from gpubench import cli
@@ -985,12 +985,12 @@ def test_quick_flag_parses():
     assert args.quick is True
 ```
 
-- [ ] **Step 2: Run to verify it fails**
+- [x] **Step 2: Run to verify it fails**
 
 Run: `cd ueb-02 && python -m pytest tests/test_cli.py -v`
 Expected: FAIL (`No module named 'gpubench.cli'`).
 
-- [ ] **Step 3: Implement `gpubench/cli.py`**
+- [x] **Step 3: Implement `gpubench/cli.py`**
 
 ```python
 """Command-line entry point: run benchmarks and dump JSON results."""
@@ -1071,7 +1071,7 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 ```
 
-- [ ] **Step 4: Write `gpubench/__main__.py`**
+- [x] **Step 4: Write `gpubench/__main__.py`**
 
 ```python
 import sys
@@ -1082,17 +1082,17 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 5: Run to verify it passes**
+- [x] **Step 5: Run to verify it passes**
 
 Run: `cd ueb-02 && python -m pytest tests/test_cli.py -v`
 Expected: PASS.
 
-- [ ] **Step 6: Smoke-run the CLI (if a device exists) + baseline (always)**
+- [x] **Step 6: Smoke-run the CLI (if a device exists) + baseline (always)**
 
 Run: `cd ueb-02 && python -m gpubench baseline --quick && python -m gpubench all --device cpu --quick`
 Expected: JSON files appear under `ueb-02/results/`. (The `all` run needs an OpenCL device; on this box install POCL per Task 1, or run on the Windows GPU.)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add ueb-02/gpubench/cli.py ueb-02/gpubench/__main__.py ueb-02/tests/test_cli.py
