@@ -1,56 +1,56 @@
 {
   "device": {
-    "name": "cpu-skylake-avx512-AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M",
-    "dtype": "CPU",
-    "compute_units": 8,
-    "max_work_group_size": 4096,
-    "wavefront": 8,
-    "global_mem_bytes": 14619959296,
-    "max_clock_mhz": 1996,
-    "local_mem_bytes": 524288
+    "name": "AMD Radeon 890M Graphics (radeonsi, strix1, ACO, DRM 3.64, 7.0.12-1-cachyos)",
+    "dtype": "GPU",
+    "compute_units": 16,
+    "max_work_group_size": 1024,
+    "wavefront": 64,
+    "global_mem_bytes": 54790799360,
+    "max_clock_mhz": 2900,
+    "local_mem_bytes": 65536
   },
   "rows": [
     {
       "n": 1024,
       "k": 256,
-      "seconds": 0.000174818,
-      "gflops": 2.9990504410301
+      "seconds": 2.2443000000000002e-05,
+      "gflops": 23.360869758944883
     },
     {
       "n": 8192,
       "k": 256,
-      "seconds": 0.000590486,
-      "gflops": 7.103138770436556
+      "seconds": 1.4548e-05,
+      "gflops": 288.3079461094309
     },
     {
       "n": 65536,
       "k": 256,
-      "seconds": 0.003821351,
-      "gflops": 8.78077726960962
+      "seconds": 3.7872e-05,
+      "gflops": 885.9957752429236
     },
     {
       "n": 524288,
       "k": 256,
-      "seconds": 0.025380954,
-      "gflops": 10.57625556549214
+      "seconds": 0.00023448500000000002,
+      "gflops": 1144.7873254152717
     },
     {
       "n": 4194304,
       "k": 256,
-      "seconds": 0.149739602,
-      "gflops": 14.341454226651411
+      "seconds": 0.001801623,
+      "gflops": 1191.9717099526372
     },
     {
       "n": 16777216,
       "k": 256,
-      "seconds": 0.41364401900000003,
-      "gflops": 20.76649050254973
+      "seconds": 0.006075905,
+      "gflops": 1413.7703917358813
     },
     {
       "n": 67108864,
       "k": 256,
-      "seconds": 1.684579362,
-      "gflops": 20.39662787225812
+      "seconds": 0.01113676,
+      "gflops": 3085.254451743595
     }
   ]
 }

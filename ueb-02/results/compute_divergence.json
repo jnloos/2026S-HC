@@ -1,63 +1,63 @@
 {
   "device": {
-    "name": "cpu-skylake-avx512-AMD Ryzen AI 9 HX PRO 370 w/ Radeon 890M",
-    "dtype": "CPU",
-    "compute_units": 8,
-    "max_work_group_size": 4096,
-    "wavefront": 8,
-    "global_mem_bytes": 14619959296,
-    "max_clock_mhz": 1996,
-    "local_mem_bytes": 524288
+    "name": "AMD Radeon 890M Graphics (radeonsi, strix1, ACO, DRM 3.64, 7.0.12-1-cachyos)",
+    "dtype": "GPU",
+    "compute_units": 16,
+    "max_work_group_size": 1024,
+    "wavefront": 64,
+    "global_mem_bytes": 54790799360,
+    "max_clock_mhz": 2900,
+    "local_mem_bytes": 65536
   },
   "rows": [
     {
       "n": 33554432,
       "k": 256,
       "degree": 1,
-      "seconds": 0.860963746,
-      "gflops": 19.95423066745484
+      "seconds": 0.00556305,
+      "gflops": 3088.2104572132193
     },
     {
       "n": 33554432,
       "k": 256,
       "degree": 2,
-      "seconds": 1.004077712,
-      "gflops": 17.11009912746674
+      "seconds": 0.010872938,
+      "gflops": 1580.0576793503283
     },
     {
       "n": 33554432,
       "k": 256,
       "degree": 4,
-      "seconds": 1.0019207700000001,
-      "gflops": 17.146933867834676
+      "seconds": 0.019429476,
+      "gflops": 884.2168046117146
     },
     {
       "n": 33554432,
       "k": 256,
       "degree": 8,
-      "seconds": 0.9755782740000001,
-      "gflops": 17.60993417120726
+      "seconds": 0.039511471,
+      "gflops": 434.8071268720924
     },
     {
       "n": 33554432,
       "k": 256,
       "degree": 16,
-      "seconds": 1.0046451650000001,
-      "gflops": 17.100434842584445
+      "seconds": 0.08044624800000001,
+      "gflops": 213.55712181878263
     },
     {
       "n": 33554432,
       "k": 256,
       "degree": 32,
-      "seconds": 1.08974908,
-      "gflops": 15.76497700186175
+      "seconds": 0.15870025000000001,
+      "gflops": 108.25357353879404
     },
     {
       "n": 33554432,
       "k": 256,
       "degree": 64,
-      "seconds": 1.2072174450000002,
-      "gflops": 14.230964980795152
+      "seconds": 0.311928584,
+      "gflops": 55.07629010363474
     }
   ]
 }
