@@ -1,6 +1,6 @@
 # Ralph Loop Workflow — ueb-02 GPU benchmark roadmap
 
-Execute the roadmap in `docs/superpowers/plans/2026-06-30-gpu-simt-bandwidth.md`,
+Execute the roadmap in `.claude/superpowers/plans/2026-06-30-gpu-simt-bandwidth.md`,
 **one plan-task per iteration**, until all 11 tasks are complete.
 
 ## Orient (every iteration)
