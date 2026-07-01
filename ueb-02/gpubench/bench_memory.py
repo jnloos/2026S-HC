@@ -84,6 +84,9 @@ def run_patterns(ctx, n: int, stride: int, c: float = 2.0) -> list[dict]:
 
 
 def run_occupancy(ctx, n: int, pattern: str, wg_sizes: list[int]) -> list[dict]:
+    # stride is fixed to 1 below, so only patterns that ignore stride are valid;
+    # a strided pattern would silently degrade to the identity (coalesced).
+    assert pattern in ("coalesced", "gather"), f"run_occupancy: unsupported pattern {pattern!r}"
     from . import SEED
     queue = runner.make_queue(ctx)
     prog = runner.build_program(ctx, load_source())

@@ -22,7 +22,9 @@ Use the project venv directly: `./.venv/bin/python -m gpubench ...` and `./.venv
 On Linux, `sudo bash setup.sh` provisions the OpenCL ICD loader, AMD iGPU (mesa/rusticl) + POCL CPU
 fallback, the venv, and the LaTeX toolchain. On a machine without a real GPU, only a **POCL CPU**
 device is present — run everything with `--device cpu` (or `PYOPENCL_CTX`); the code is
-device-agnostic so the same kernels run on CPU.
+device-agnostic so the same kernels run on CPU. The suite also runs on **Windows** (the AMD
+Adrenalin driver supplies OpenCL): `python -m pip install -r requirements.txt`, then the same
+`python -m gpubench ...` commands (no `setup.sh`, no venv path prefix).
 
 ## Commands
 
@@ -31,7 +33,6 @@ device-agnostic so the same kernels run on CPU.
 ./.venv/bin/python -m gpubench all  --device cpu       # full sweeps  -> results/*.json
 ./.venv/bin/python -m gpubench baseline                # NumPy CPU baselines (no OpenCL device needed)
 ./.venv/bin/python -m gpubench plots                   # figures from results/ -> report/essay/figures/
-./.venv/bin/python -m gpubench values                  # results/ -> report/essay/values.tex macros (no GPU)
 ./.venv/bin/python -m gpubench all --device gpu        # real-GPU sweep (run on a GPU host)
 
 ./.venv/bin/python -m pytest -q                        # full suite; device-bound tests auto-skip if no device
@@ -43,7 +44,7 @@ cd report/essay && latexmk -pdf report.tex             # build the German report
 ```
 
 `--quick` shrinks every sweep for a smoke run. `--device` accepts `gpu`, `cpu`, or a numeric device index.
-`run_all.sh` chains the five steps end to end (device sweeps, baselines, `plots`, `values`, latexmk);
+`run_all.sh` chains the four steps end to end (device sweeps, baselines, `plots`, latexmk);
 it is the intended way to refresh everything after new measurements.
 
 ## Architecture
@@ -52,13 +53,14 @@ The pipeline is **JSON-mediated and decoupled**, which is the key design fact:
 
 1. Benchmark commands produce `results/*.json` (`{device, rows}`). The GPU is only needed at this step.
 2. `plots` reads that committed JSON and regenerates `report/essay/figures/*.png` with **no GPU required**.
-3. `values` reads the same JSON and regenerates `report/essay/values.tex` — LaTeX macros for every number
-   the prose and table cite, plus a `\ifdevicegpu` flag for GPU-vs-CPU wording. **No GPU required.**
-4. The LaTeX report `\input`s `values.tex` and includes the figures, so it never hard-codes a measurement.
+3. The LaTeX report includes those figures and is otherwise self-contained: the cited numbers in the
+   prose and summary table are **literal values written directly into `report.tex`**. There is no
+   auto-generated macro file. When new measurements change a number, update the figures via `plots`
+   and edit the affected literals in `report.tex` by hand.
 
-So figures, numbers, and the report all rebuild on any machine from committed results, and a GPU host is
-only needed to refresh `results/*.json`. Keep this separation intact — do not paste measured numbers
-directly into the `.tex`; add a macro in `report_values.py` instead.
+So the figures rebuild on any machine from committed results, and a GPU host is only needed to refresh
+`results/*.json`. (A former `gpubench values` step generated a `values.tex` macro file that the report
+`\input`ed; it was removed in favor of inline literals.)
 
 Module responsibilities inside `gpubench/`:
 
@@ -71,9 +73,6 @@ Module responsibilities inside `gpubench/`:
 - `bench_compute.py` / `bench_memory.py` — build kernels with `-D` macros, run sweeps, return `rows`.
 - `cpu_baseline.py` — NumPy mirrors of the same workloads for a CPU reference (no OpenCL).
 - `plots.py` — matplotlib (`Agg` backend); one `plot_*` per result file.
-- `report_values.py` — derives the report's LaTeX macros from `results/*.json` (`build_macros` computes,
-  `render` emits `\newcommand`s + the `\ifdevicegpu` flag). Numbers use German decimal commas via `_de`.
-  A new cited figure means a new macro here, not an edit to the `.tex`.
 - `kernels/*.cl` — the only non-Python source. `compute.cl` is parameterized at build time with
   `-D KITERS=<k> -D DEGREE=<d>`; `DEGREE` controls how many equal-cost paths a wavefront serializes
   while keeping per-item FLOP count constant.

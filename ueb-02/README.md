@@ -49,5 +49,5 @@ python -m pytest -v   # device-bound tests skip automatically if no OpenCL devic
 ## Layout
 - `gpubench/` - Python package (device, runner, benchmarks, baselines, plots, CLI)
 - `gpubench/kernels/*.cl` - the only non-Python source (OpenCL-C)
-- `results/` - committed JSON; figures and report regenerate from it without a GPU
-- `report/essay/` - LaTeX report (German)
+- `results/` - committed JSON; `plots` regenerates the figures from it without a GPU
+- `report/essay/` - LaTeX report (German); numbers are inline literals, figures come from `results/`

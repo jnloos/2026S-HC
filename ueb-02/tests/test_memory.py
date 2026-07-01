@@ -34,6 +34,19 @@ def test_run_patterns_reports_bandwidth(cl_context):
     rows = bench_memory.run_patterns(cl_context, n=1 << 18, stride=521)
     assert {r["pattern"] for r in rows} == set(bench_memory.PATTERNS)
     assert all(r["gbps"] > 0 for r in rows)
+    bw = {r["pattern"]: r["gbps"] for r in rows}
+    # Coalesced is the fastest access pattern on any coalescing/cache hardware;
+    # strided and gather both defeat it.
+    assert all(bw["coalesced"] >= bw[p] for p in bw if p != "coalesced")
+
+
+def test_make_index_gather_is_deterministic():
+    from gpubench import SEED
+    a = bench_memory.make_index("gather", 4096, 521, SEED)
+    b = bench_memory.make_index("gather", 4096, 521, SEED)
+    assert np.array_equal(a, b)
+    c = bench_memory.make_index("gather", 4096, 521, SEED + 1)
+    assert not np.array_equal(a, c)
 
 
 def test_make_index_strided_rejects_non_coprime():

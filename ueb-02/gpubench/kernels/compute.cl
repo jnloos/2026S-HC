@@ -7,8 +7,14 @@
 #define DEGREE 1
 #endif
 
+// Fallback values so the kernel compiles standalone; the authoritative
+// copy lives in bench_compute.py and is injected via -D COEF / -D BIAS.
+#ifndef COEF
 #define COEF 0.9999997f
+#endif
+#ifndef BIAS
 #define BIAS 0.0000013f
+#endif
 
 inline float work(float x) {
     for (int i = 0; i < KITERS; ++i) {

@@ -10,4 +10,4 @@ def test_pyopencl_importable():
 
 def test_context_or_skip(cl_context):
     # If a device exists, the fixture yields a usable context.
-    assert cl_context is not None
+    assert len(cl_context.devices) >= 1

@@ -31,7 +31,11 @@ def _gflops(n: int, k: int, seconds: float) -> float:
 
 def run_scaling(ctx, ns: list[int], k: int) -> list[dict]:
     queue = runner.make_queue(ctx)
-    prog = runner.build_program(ctx, load_source(), options=f"-D KITERS={k} -D DEGREE=1")
+    prog = runner.build_program(
+        ctx,
+        load_source(),
+        options=f"-D KITERS={k} -D DEGREE=1 -D COEF={_COEF}f -D BIAS={_BIAS}f",
+    )
     kernel = cl.Kernel(prog, "compute_uniform")  # retrieve once; reuse per launch
     rows = []
     for n in ns:
@@ -50,7 +54,9 @@ def run_divergence(ctx, n: int, k: int, degrees: list[int]) -> list[dict]:
     src = load_source()  # read once; only the -D DEGREE build option changes
     rows = []
     for d in degrees:
-        prog = runner.build_program(ctx, src, options=f"-D KITERS={k} -D DEGREE={d}")
+        prog = runner.build_program(
+            ctx, src, options=f"-D KITERS={k} -D DEGREE={d} -D COEF={_COEF}f -D BIAS={_BIAS}f"
+        )
         kernel = cl.Kernel(prog, "compute_divergent")  # retrieve once per build
         out = cl.Buffer(ctx, cl.mem_flags.WRITE_ONLY, size=n * 4)
 

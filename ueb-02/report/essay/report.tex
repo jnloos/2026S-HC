@@ -46,70 +46,59 @@
 \newcommand{\veranstaltung}{Het. Computing\\ Übungsblatt 2}
 \bibliography{references.bib}
 
-% Automatisch aus results/*.json erzeugte Messwerte und Geräte-Flags.
-% Erzeugung: python -m gpubench values  (bzw. ./run_all.sh).
-\IfFileExists{values.tex}{\input{values.tex}}{%
-  \newif\ifdevicegpu\devicegpufalse
-  \newcommand{\deviceName}{(unbekannt, values.tex fehlt; \texttt{gpubench values} ausführen)}%
-}
-
 \begin{document}
 
 \section*{Einführung}
 Ziel dieser Übung ist es, das \textit{SIMT-Ausführungsmodell} (Single Instruction, Multiple Threads) einer GPU messbar und damit sichtbar zu machen. Dazu habe ich mit PyOpenCL\autocite{pyopencl} zwei Mikro-Benchmarks gebaut. Der erste nutzt einen rechenintensiven \textit{Kernel} (Funktion, die auf der GPU läuft) und vermisst den Durchsatz in \textit{GFLOP/s} (Anzahl Gleitkomma-Operationen pro Sekunde) über die Problemgröße sowie über den Grad der \textit{Warp-Divergenz} (Threads im selben Warp nehmen verschiedene Verzweigungen). Der zweite ist ein speicherintensiver Streaming-Kernel und untersucht die effektive Bandbreite für drei Zugriffsmuster sowie das Verbergen von Latenzen über die \textit{Occupancy} (Anteil der gleichzeitig aktiven Warps am Hardware-Maximum). Als Vergleichspunkt dient jeweils eine CPU-Referenz auf Basis von NumPy.
 
-Die OpenCL-Kernels werden zur Laufzeit vom Treiber übersetzt\autocite{opencl} und auf der Hardware ausgeführt, während die gesamte Steuerung über Python erfolgt. Weil Numpy Matrizenoperationen hardware-optimiert in C bzw. C++ ausführt, sind auch die Vergleichsbenchmarks aussagkräftig. Die hier genannten Messungen wurden auf einer AMD Ryzen AI 9 HX PRO 370 CPU mit einer AMD Radeon 890M Graphics On-Board-GPU ausgeführt. Die implementierten Scripts sollten allerdings geräteunabhängig mit \texttt{python -m gpubench all} ausgeführt werden können.
+Die OpenCL-Kernels werden zur Laufzeit vom Treiber übersetzt\autocite{opencl} und auf der Hardware ausgeführt, während die gesamte Steuerung über Python erfolgt. Weil NumPy seine Array-Operationen hardware-optimiert in C bzw. C++ ausführt, sind auch die Vergleichsbenchmarks aussagekräftig. Die hier genannten Messungen wurden auf einer AMD Ryzen AI 9 HX PRO 370 CPU mit einer AMD Radeon 890M Graphics On-Board-GPU ausgeführt. Die implementierten Scripts sollten allerdings geräteunabhängig mit \texttt{python -m gpubench all} ausgeführt werden können.
 
 Die folgenden Erklärungen beschreiben die hardwareseitigen SIMT-Mechanismen und ordnen die gemessenen Werte ein. Obwohl viele Begrifflichkeiten in den AMD nahen Dokumentationen anders sind (bspw. Warps vs. Wavefronts), hält sich dieses Dokument an die in der Vorlesung genutzten NVIDIA Namenskonventionen.
 
 \section*{Aufbau und Messmethodik}
-Ein \texttt{device}-Modul wählt einen OpenCL-Kontext (Organisationsstruktur um den Kernel) und liest zunächst die Geräteeigenschaften aus. Das für die Tests genutzte Gerät meldet \computeUnits{} Compute Units, eine maximale Work-Group-Größe von \maxWorkGroup{} und ein bevorzugtes Vielfaches der Work-Group-Größe von \waveFront{}. Dieses Vielfache nutze ich als Stellvertreter für die Warp-Breite (bei NVIDIA typischerweise $32$, auf AMD-GPUs $64$). Die Zeitmessung erfolgt über OpenCL-Profiling-Events, die ausschließlich die Kernel-Laufzeit auf dem Gerät erfassen und damit den Host-Overhead ausklammern. Jede Messung verwendet zwei Aufwärmläufe und meldet anschließend den Median aus mehreren Wiederholungen, um Einschwing- und Ausreißereffekte zu dämpfen. Alle Ergebnisse werden als JSON abgelegt.
+Ein \texttt{device}-Modul wählt einen OpenCL-Kontext (Organisationsstruktur um den Kernel) und liest zunächst die Geräteeigenschaften aus. Das für die Tests genutzte Gerät meldet 16 Compute Units, eine maximale Work-Group-Größe von 1024 und ein bevorzugtes Vielfaches der Work-Group-Größe von 64. Dieses Vielfache nutze ich als Stellvertreter für die Warp-Breite (bei NVIDIA typischerweise $32$, auf AMD-GPUs $64$). Die Zeitmessung erfolgt über OpenCL-Profiling-Events, die ausschließlich die Kernel-Laufzeit auf dem Gerät erfassen und damit den Host-Overhead ausklammern. Jede Messung verwendet zwei Aufwärmläufe und meldet anschließend den Median aus mehreren Wiederholungen, um Einschwing- und Ausreißereffekte zu dämpfen. Alle Ergebnisse werden als JSON abgelegt.
 
 \section*{Aufgabe 1: SIMT und Warp-Divergenz}
-Im rechenintensiven Kernel bearbeitet jedes Work-Item genau ein Element und führt darauf eine feste Zahl von FMA-Schritten (Fused Multiply-Add: $x = x \cdot \mathrm{COEF} + \mathrm{BIAS}$) mit je zwei FLOPs je Schnritt aus. Abbildung~\ref{fig:scaling} zeigt den Durchsatz über der Problemgröße $n$. Bei kleinem $n$ ($\smallN$ Work-Items) liegt der Durchsatz mit $\smallGflops$~GFLOP/s niedrig, weil zu wenige Threads vorhanden sind, um die Recheneinheiten auszulasten und Startkosten zu amortisieren. Mit wachsendem $n$ steigt der Durchsatz und sättigt bei etwa $\peakGflops$~GFLOP/s (bei $n \approx \satN$). Auf einer GPU markiert dies den Übergang, ab dem alle Compute Units mit genügend Warps gefüllt sind, sodass sich SIMT lohnt.
+Im rechenintensiven Kernel bearbeitet jedes Work-Item genau ein Element und führt darauf eine feste Zahl von FMA-Schritten (Fused Multiply-Add: $x = x \cdot \mathrm{COEF} + \mathrm{BIAS}$) mit je zwei FLOPs je Schritt aus. Abbildung~\ref{fig:scaling} zeigt den Durchsatz über der Problemgröße $n$. Bei kleinem $n$ ($1024$ Work-Items) liegt der Durchsatz mit $23{,}4$~GFLOP/s niedrig, weil zu wenige Threads vorhanden sind, um die Recheneinheiten auszulasten und Startkosten zu amortisieren. Mit wachsendem $n$ steigt der Durchsatz und sättigt bei etwa $3085{,}3$~GFLOP/s (bei $n \approx 6{,}7 \cdot 10^{7}$). Auf einer GPU markiert dies den Übergang, ab dem alle Compute Units mit genügend Warps gefüllt sind, sodass sich SIMT lohnt.
 
 \begin{figure}[h!]\centering
 \includegraphics[width=0.75\textwidth]{figures/scaling.png}
 \caption{Durchsatz über der Problemgröße $n$ (logarithmische $n$-Achse).}\label{fig:scaling}\end{figure}
 
-Den Kern der Aufgabe bildet die Warp-Divergenz. Im divergenten Kernel wählt jedes Work-Item anhand von \texttt{get\_local\_id(0) \% DEGREE} einen von \texttt{DEGREE} Pfaden. Dabei leistet jeder Pfad exakt dieselbe Arbeit, sodass die Gesamtarbeit je Work-Item unabhängig vom Divergenzgrad konstant bleibt. Auf einer GPU führt ein Warp seine Lanes im Lockstep aus: Nehmen die Lanes unterschiedliche Verzweigungen, so arbeitet der Warp die \texttt{DEGREE} Pfade serialisiert nacheinander ab. In jedem Durchlauf ist nur die zu diesem Pfad gehörende Lane-Gruppe aktiv, während die übrigen Lanes maskiert mitlaufen und ihre Ergebnisse verworfen werden. Da jeder Durchlauf die volle Zeit kostet, fällt der Durchsatz annähernd auf $1/\mathrm{DEGREE}$. Abbildung~\ref{fig:divergence} zeigt die Messung und bestätigt die Theorie: Der Durchsatz sinkt von $\divHigh$~GFLOP/s (kein divergenter Pfad) auf $\divLow$~GFLOP/s bei Grad $\divDegHigh$, also um den Faktor $\divFactor$.
+Den Kern der Aufgabe bildet die Warp-Divergenz. Im divergenten Kernel wählt jedes Work-Item anhand von \texttt{get\_local\_id(0) \% DEGREE} einen von \texttt{DEGREE} Pfaden. Dabei leistet jeder Pfad exakt dieselbe Arbeit, sodass die Gesamtarbeit je Work-Item unabhängig vom Divergenzgrad konstant bleibt. Auf einer GPU führt ein Warp seine Lanes im Lockstep aus: Nehmen die Lanes unterschiedliche Verzweigungen, so arbeitet der Warp die \texttt{DEGREE} Pfade serialisiert nacheinander ab. In jedem Durchlauf ist nur die zu diesem Pfad gehörende Lane-Gruppe aktiv, während die übrigen Lanes für diesen Durchlauf maskiert, also inaktiv sind. Da jeder Durchlauf die volle Zeit kostet, fällt der Durchsatz annähernd auf $1/\mathrm{DEGREE}$. Abbildung~\ref{fig:divergence} zeigt die Messung und bestätigt die Theorie: Der Durchsatz sinkt von $3088{,}2$~GFLOP/s (kein divergenter Pfad) auf $55{,}1$~GFLOP/s bei Grad $64$, also um den Faktor $56{,}1$.
 
 \begin{figure}[h!]\centering
 \includegraphics[width=0.75\textwidth]{figures/divergence.png}
 \caption{Durchsatz über dem Divergenzgrad (Pfade je Warp).}\label{fig:divergence}\end{figure}
 
-Dieser steile, annähernd mit $1/\mathrm{DEGREE}$ verlaufende Einbruch ist die unmittelbare Folge der Lockstep-Ausführung, die divergente Pfade serialisiert. Die NumPy-Referenz auf der CPU bleibt im Gegensatz dazu über die Divergenzgrade nahezu konstant, da ein CPU-Kern Sprungvorhersage und unabhängige Pfadausführung besitzt und beliebig viele Verzweigungen damit kaum kosten.
+Dieser steile, annähernd mit $1/\mathrm{DEGREE}$ verlaufende Einbruch, ist die unmittelbare Folge der Lockstep-Ausführung, die divergente Pfade serialisiert. Die NumPy-Referenz auf der CPU steigt im Gegensatz dazu über die Divergenzgrade nur schwach an (Faktor rund $2{,}6$ statt $56{,}1$). Sie leistet dieselbe elementweise Gesamtarbeit ohne Lockstep-Serialisierung, weshalb kein $1/\mathrm{DEGREE}$-Einbruch entsteht. Der verbleibende Anstieg geht auf den Mehraufwand der Fallunterscheidung (je Grad eine zusätzliche Maskierung über das gesamte Feld) zurück, nicht auf die Ausführung der Verzweigungen selbst.
 
 \section*{Aufgabe 2: Speicherzugriff und Latency-Hiding}
-Der speicherintensive Kernel berechnet $b[i] = a[\mathrm{idx}[i]] \cdot c$ und besitzt eine sehr geringe arithmetische Intensität, ist also bandbreitenbegrenzt. Das Indexfeld \texttt{idx} kodiert das Zugriffsmuster, sodass ein einziger Kernel alle drei Muster fair vermisst: coalesced (Identität), strided (großer, zu $n$ teilerfremder Schritt) und gather (zufällige Permutation mit festem Seed). Abbildung~\ref{fig:patterns} zeigt die effektive Bandbreite. Der coalesced-Zugriff erreicht $\bwCoalesced$~GB/s und liegt damit nahe an der separat gemessenen Kopier-Spitzenbandbreite von $\bwPeakCopy$~GB/s. Der strided-Zugriff bricht auf $\bwStrided$~GB/s ein, der gather-Zugriff auf $\bwGather$~GB/s; coalesced ist somit rund um den Faktor $\bwRatio$ schneller als gather. Auf einer GPU verschmilzt die Hardware benachbarte Zugriffe eines Warps zu wenigen Speichertransaktionen (Coalescing). Unregelmäßige Adressen zerfallen dagegen in viele einzelne Transaktionen und lasten die Bandbreite schlecht aus.
+Der speicherintensive Kernel berechnet $b[i] = a[\mathrm{idx}[i]] \cdot c$ und besitzt eine sehr geringe arithmetische Intensität, ist also bandbreitenbegrenzt. Das Indexfeld \texttt{idx} kodiert das Zugriffsmuster, sodass ein einziger Kernel alle drei Muster fair vermisst: coalesced (Identität), strided (großer, zu $n$ teilerfremder Schritt) und gather (zufällige Permutation mit festem Seed). Abbildung~\ref{fig:patterns} zeigt die effektive Bandbreite. Der coalesced-Zugriff erreicht $78{,}7$~GB/s und liegt damit nahe an der separat gemessenen Kopier-Spitzenbandbreite von $79{,}4$~GB/s. Der strided-Zugriff bricht auf $6{,}9$~GB/s ein, der gather-Zugriff auf $6{,}9$~GB/s; coalesced ist somit rund um den Faktor $11{,}3$ schneller als gather. Auf einer GPU verschmilzt die Hardware benachbarte Zugriffe eines Warps zu wenigen Speichertransaktionen (Coalescing). Unregelmäßige Adressen zerfallen dagegen in viele einzelne Transaktionen und lasten die Bandbreite schlecht aus.
 
 \begin{figure}[h!]\centering
 \includegraphics[width=0.75\textwidth]{figures/patterns.png}
 \caption{Effektive Bandbreite je Zugriffsmuster.}\label{fig:patterns}\end{figure}
 
-Abbildung~\ref{fig:occupancy} variiert die Work-Group-Größe und damit die Occupancy, also das Verhältnis aus aktiven zu maximal möglichen Warps je Compute Unit. Die Bandbreite steigt von $\occLow$~GB/s bei $\occWgLow$ Work-Items je Gruppe auf $\occHigh$~GB/s bei $\occWgHigh$ und läuft dann in ein Plateau. Die GPU verbirgt Speicherlatenz nicht über große Caches, sondern über massive Parallelität: Wartet ein Warp auf Daten, schaltet der Scheduler auf einen anderen lauffähigen Warp um. Erst wenn genügend Warps resident sind, wird die Latenz vollständig verdeckt. Die CPU verfolgt die entgegengesetzte Strategie und verbirgt Latenz über die Cache-Hierarchie und Prefetching: Die NumPy-Referenz erreicht sequenziell $\npStream$~GB/s, beim zufälligen gather aber nur $\npGather$~GB/s, weil dann nahezu jeder Zugriff einen Cache-Miss erzeugt.
+Abbildung~\ref{fig:occupancy} variiert die Work-Group-Größe. Die Bandbreite steigt von $45{,}0$~GB/s bei $8$ Work-Items je Gruppe auf rund $80{,}2$~GB/s und geht ab einer Work-Group-Größe in Höhe der Warp-Breite in ein Plateau über. Der Anstieg ist zunächst eine Frage der Lane-Auslastung: Eine Gruppe unterhalb der Warp-Breite belegt trotzdem einen ganzen Warp, von dem nur ein Teil der Lanes aktiv ist, sodass jede Speichertransaktion nur teilweise gefüllt wird. Erst bei vollem Warp sind alle Lanes aktiv. Darüber hinaus verbirgt die GPU Speicherlatenz nicht über große Caches, sondern über massive Parallelität: Wartet ein Warp auf Daten, schaltet der Scheduler auf einen anderen lauffähigen Warp um. Genügend residente Warps liegen hier bereits durch die große Gesamtzahl an Work-Items vor, sodass jenseits des vollen Warps kein weiterer Anstieg auftritt. Die CPU verfolgt eine andere Strategie und verbirgt Latenz über die Cache-Hierarchie und Prefetching: Die NumPy-Referenz erreicht sequenziell $12{,}9$~GB/s, beim zufälligen gather aber nur $1{,}5$~GB/s, weil durch das Zufallsverfahren nahezu jeder Zugriff einen Cache-Miss erzeugt.
 
 \begin{figure}[h!]\centering
 \includegraphics[width=0.75\textwidth]{figures/occupancy.png}
 \caption{Bandbreite über der Work-Group-Größe (Occupancy).}\label{fig:occupancy}\end{figure}
 
 \section*{Fazit}
-Tabelle~\ref{tab:summary} fasst die Messungen zusammen.
-\ifdevicegpu
-Sie stellt die GPU \deviceName{} der NumPy-CPU-Referenz gegenüber.
-\else
-Sie stellt das OpenCL-Gerät (hier POCL-CPU) der NumPy-Referenz gegenüber; auf einer GPU erzeugt derselbe Ablauf die Gerätespalte neu.
-\fi
+Tabelle~\ref{tab:summary} fasst die Messungen auf der anfangs beschriebenen Maschine zusammen und stellt die GPU-Ergebnisse mit der NumPy-CPU-Referenz gegenüber.
+
 
 \begin{table}[h]\centering
 \begin{tabularx}{\textwidth}{l *{2}{>{\centering\arraybackslash}X}}
 \toprule
-\textbf{Messung} & \textbf{\ifdevicegpu GPU\else OpenCL (POCL-CPU)\fi} & \textbf{NumPy (CPU)} \\
+\textbf{Messung} & \textbf{GPU} & \textbf{CPU} \\
 \midrule
-Spitzen-Durchsatz (GFLOP/s)            & $\peakGflops$ & $\npPeakGflops$ \\
-Divergenz-Einbruch (Grad 1 zu \divDegHigh)  & Faktor $\divFactor$ & nahezu konstant \\
-Bandbreite coalesced (GB/s)            & $\bwCoalesced$ & $\npStream$ \\
-Bandbreite gather (GB/s)               & $\bwGather$ & $\npGather$ \\
+Spitzen-Durchsatz (GFLOP/s)            & $3085{,}3$ & $14{,}5$ \\
+Divergenz-Einbruch (Grad 1 zu 64)  & Faktor $56{,}1$ & Faktor $2{,}6$ \\
+Bandbreite coalesced (GB/s)            & $78{,}7$ & $12{,}9$ \\
+Bandbreite gather (GB/s)               & $6{,}9$ & $1{,}5$ \\
 \bottomrule
 \end{tabularx}
 \caption{Zusammenfassung der Messungen.}\label{tab:summary}\end{table}

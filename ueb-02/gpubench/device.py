@@ -7,6 +7,10 @@ from dataclasses import dataclass
 import numpy as np
 import pyopencl as cl
 
+from .runner import _event_seconds
+
+_F32_BYTES = np.dtype(np.float32).itemsize
+
 
 @dataclass
 class DeviceInfo:
@@ -94,11 +98,11 @@ def wavefront_width(ctx: cl.Context) -> int:
 
 def peak_bandwidth_gbps(ctx: cl.Context, nbytes: int = 256 * 1024 * 1024) -> float:
     """Measured copy bandwidth (read+write) as a peak reference for Task 2."""
-    n = nbytes // 4
+    n = nbytes // _F32_BYTES
     queue = cl.CommandQueue(ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
     mf = cl.mem_flags
-    a = cl.Buffer(ctx, mf.READ_ONLY, size=n * 4)
-    b = cl.Buffer(ctx, mf.WRITE_ONLY, size=n * 4)
+    a = cl.Buffer(ctx, mf.READ_ONLY, size=n * _F32_BYTES)
+    b = cl.Buffer(ctx, mf.WRITE_ONLY, size=n * _F32_BYTES)
     host = np.ones(n, dtype=np.float32)
     cl.enqueue_copy(queue, a, host)
     prog = cl.Program(ctx, "__kernel void cpy(__global const float*a,__global float*b){"
@@ -109,8 +113,9 @@ def peak_bandwidth_gbps(ctx: cl.Context, nbytes: int = 256 * 1024 * 1024) -> flo
     best = None
     for _ in range(5):
         ev = cpy(queue, (n,), None, a, b)
-        ev.wait()
-        secs = (ev.profile.end - ev.profile.start) * 1e-9
+        secs = _event_seconds(ev)
         best = secs if best is None else min(best, secs)
-    moved = 2 * n * 4  # read a + write b
+    moved = 2 * n * _F32_BYTES  # read a + write b
+    if not best:
+        raise RuntimeError("peak bandwidth probe: profiling reported zero kernel time")
     return (moved / best) / 1e9
