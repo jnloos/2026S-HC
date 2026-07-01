@@ -13,9 +13,6 @@ two assignment parts:
 - **Aufgabe 2** (memory-bound): streaming bandwidth for coalesced/strided/random-gather access
   patterns, and latency hiding via occupancy (`gpubench/kernels/memory.cl`, `bench_memory.py`).
 
-The loose `cs.c` / `cs.cpp` / `cs.py` files and `lib/Importer.py` are an unrelated pybind11 demo,
-not part of `gpubench`.
-
 ## Environment
 
 Use the project venv directly: `./.venv/bin/python -m gpubench ...` and `./.venv/bin/python -m pytest`.
