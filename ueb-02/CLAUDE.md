@@ -37,7 +37,7 @@ Adrenalin driver supplies OpenCL): `python -m pip install -r requirements.txt`, 
 
 cd report/essay && latexmk -pdf report.tex             # build the German report PDF (biber-based)
 
-./run_all.sh [gpu|cpu|<index>] [--quick]               # one-shot: sweeps + baselines + plots + values + PDF
+./run_all.sh [gpu|cpu|<index>] [--quick]               # one-shot: sweeps + baselines + plots + PDF
 ```
 
 `--quick` shrinks every sweep for a smoke run. `--device` accepts `gpu`, `cpu`, or a numeric device index.
